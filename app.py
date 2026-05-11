@@ -1,6 +1,5 @@
-from flask import Flask, render_template, request
+import streamlit as st
 import os
-from werkzeug.utils import secure_filename
 
 from resume_parser import extract_text_from_resume
 from skill_extraction.skill_extractor import extract_skills
@@ -8,13 +7,6 @@ from skill_gap_analysis import analyze_skill_gap
 from employability_score import calculate_employability_score
 from job_role_suggester import suggest_job_role
 from resume_improvement import improvement_suggestions
-
-app = Flask(__name__)
-
-# Upload folder setup
-UPLOAD_FOLDER = "uploads/resumes"
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 
 def recommend_courses(missing_skills):
@@ -27,53 +19,31 @@ def recommend_courses(missing_skills):
         "data science": "IBM Data Science Professional Certificate"
     }
 
-    recommendations = {}
-
-    for skill in missing_skills:
-        recommendations[skill] = course_map.get(
+    return {
+        skill: course_map.get(
             skill.lower(),
             "Search online learning resources"
         )
+        for skill in missing_skills
+    }
 
-    return recommendations
 
+st.title("Skill-Gap Aware Employability Assessment")
 
-@app.route("/", methods=["GET", "POST"])
-def index():
+resume_file = st.file_uploader("Upload Resume PDF")
+job_desc = st.text_area("Paste Job Description")
 
-    score = None
-    matched = []
-    missing = []
-    recommendations = {}
-    job_role = None
-    improvements = []
+if st.button("Analyze"):
 
-    if request.method == "POST":
+    if resume_file and job_desc:
 
-        if "resume" not in request.files:
-            return "No file uploaded"
+        with open(resume_file.name, "wb") as f:
+            f.write(resume_file.getbuffer())
 
-        resume_file = request.files["resume"]
-
-        if resume_file.filename == "":
-            return "No selected file"
-
-        job_desc = request.form.get("job_desc", "")
-
-        filename = secure_filename(resume_file.filename)
-        resume_path = os.path.join(
-            app.config["UPLOAD_FOLDER"],
-            filename
-        )
-
-        resume_file.save(resume_path)
-
-        # Extract text
         resume_text = extract_text_from_resume(
-            resume_path
+            resume_file.name
         )
 
-        # Extract skills
         resume_skills = extract_skills(
             resume_text
         )
@@ -82,47 +52,34 @@ def index():
             job_desc
         )
 
-        # Skill gap analysis
         matched, missing = analyze_skill_gap(
             resume_skills,
             job_skills
         )
 
-        # Employability score
         score = calculate_employability_score(
             matched,
             job_skills
         )
 
-        # Recommendations
         recommendations = recommend_courses(
             missing
         )
 
-        # Suggested role
         job_role = suggest_job_role(
             resume_skills
         )
 
-        # Resume improvements
         improvements = improvement_suggestions(
             missing
         )
 
-    return render_template(
-        "index.html",
-        score=score,
-        matched=matched,
-        missing=missing,
-        recommendations=recommendations,
-        job_role=job_role,
-        improvements=improvements
-    )
+        st.success(f"Employability Score: {score}%")
+        st.write("Matched Skills:", matched)
+        st.write("Missing Skills:", missing)
+        st.write("Recommended Role:", job_role)
+        st.write("Course Recommendations:", recommendations)
+        st.write("Resume Improvements:", improvements)
 
-
-if __name__ == "__main__":
-    app.run(
-        host="0.0.0.0",
-        port=5000,
-        debug=False
-    )
+    else:
+        st.error("Upload resume and enter job description")
