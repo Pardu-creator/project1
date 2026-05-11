@@ -1,5 +1,8 @@
-streamlit
-yfinance
-pandas
 flask
 werkzeug
+pdfplumber
+spacy
+scikit-learn
+numpy
+pandas
+en-core-web-sm
