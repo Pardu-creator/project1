@@ -60,31 +60,54 @@ def index():
 
         job_desc = request.form.get("job_desc", "")
 
-        # Secure file name
         filename = secure_filename(resume_file.filename)
-        resume_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+        resume_path = os.path.join(
+            app.config["UPLOAD_FOLDER"],
+            filename
+        )
 
         resume_file.save(resume_path)
 
-        # Process resume
-        resume_text = extract_text_from_resume(resume_path)
+        # Extract text
+        resume_text = extract_text_from_resume(
+            resume_path
+        )
 
-        resume_skills = extract_skills(resume_text)
-        job_skills = extract_skills(job_desc)
+        # Extract skills
+        resume_skills = extract_skills(
+            resume_text
+        )
 
+        job_skills = extract_skills(
+            job_desc
+        )
+
+        # Skill gap analysis
         matched, missing = analyze_skill_gap(
-            resume_skills, job_skills
+            resume_skills,
+            job_skills
         )
 
+        # Employability score
         score = calculate_employability_score(
-            matched, job_skills
+            matched,
+            job_skills
         )
 
-        recommendations = recommend_courses(missing)
+        # Recommendations
+        recommendations = recommend_courses(
+            missing
+        )
 
-        job_role = suggest_job_role(resume_skills)
+        # Suggested role
+        job_role = suggest_job_role(
+            resume_skills
+        )
 
-        improvements = improvement_suggestions(missing)
+        # Resume improvements
+        improvements = improvement_suggestions(
+            missing
+        )
 
     return render_template(
         "index.html",
@@ -98,4 +121,8 @@ def index():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(
+        host="0.0.0.0",
+        port=8501,
+        debug=False
+    )
