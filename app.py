@@ -9,64 +9,69 @@ st.set_page_config(
     layout="wide"
 )
 
-# ---------------- CSS ----------------
+# ---------------- STYLING ----------------
 st.markdown("""
 <style>
 .stApp{
-    background:#0b0f19;
+    background:#0a0f1f;
     color:white;
 }
 
+/* Sidebar */
 section[data-testid="stSidebar"]{
-    background:#111827;
-    border-right:2px solid #00f7ff;
+    background:linear-gradient(180deg,#111827,#0f172a);
+    border-right:2px solid #00eaff;
+    padding-top:20px;
 }
 
+/* Sidebar text */
+.css-1d391kg {
+    color:white;
+}
+
+/* Cards */
 .card{
     background:#111827;
     padding:25px;
-    border-radius:18px;
-    border:1px solid #00f7ff55;
-    box-shadow:0 0 20px #00f7ff22;
-    transition:0.4s;
+    border-radius:20px;
+    border:1px solid #00eaff55;
+    box-shadow:0 0 20px #00eaff22;
     margin:15px 0;
 }
 
-.card:hover{
-    transform:translateY(-8px);
-    box-shadow:0 0 35px #00f7ff88;
-}
-
+/* Title */
 .title{
     font-size:42px;
     font-weight:800;
-    color:#00f7ff;
+    color:#00eaff;
     text-align:center;
     margin-bottom:30px;
 }
 
+/* Buttons */
 .stButton>button{
-    background:#00f7ff;
+    width:100%;
+    background:#00eaff;
     color:black;
     font-weight:bold;
     border:none;
     border-radius:12px;
-    width:100%;
 }
 
+/* Inputs */
 .stTextInput input,
 textarea{
     background:#1f2937 !important;
     color:white !important;
     border-radius:12px !important;
-    border:1px solid #00f7ff !important;
+    border:1px solid #00eaff !important;
 }
 </style>
 """, unsafe_allow_html=True)
 
 # ---------------- SESSION ----------------
 if "logged_in" not in st.session_state:
-    st.session_state.logged_in = False
+    st.session_state.logged_in=False
 
 
 # ---------------- LOGIN ----------------
@@ -77,36 +82,25 @@ def login_page():
         unsafe_allow_html=True
     )
 
-    menu = st.sidebar.radio(
-        "Menu",
-        ["Login", "Register"]
-    )
+    tab1,tab2=st.tabs(["🔐 Login","📝 Register"])
 
-    if menu == "Login":
-
-        u = st.text_input("Username")
-        p = st.text_input(
-            "Password",
-            type="password"
-        )
+    with tab1:
+        u=st.text_input("Username")
+        p=st.text_input("Password",type="password")
 
         if st.button("Login"):
-            if login_user(u, p):
-                st.session_state.logged_in = True
+            if login_user(u,p):
+                st.session_state.logged_in=True
                 st.rerun()
             else:
                 st.error("Invalid Login")
 
-    else:
-
-        u = st.text_input("Create Username")
-        p = st.text_input(
-            "Create Password",
-            type="password"
-        )
+    with tab2:
+        u=st.text_input("Create Username")
+        p=st.text_input("Create Password",type="password")
 
         if st.button("Register"):
-            if register_user(u, p):
+            if register_user(u,p):
                 st.success("Registered Successfully")
             else:
                 st.error("User Exists")
@@ -115,124 +109,111 @@ def login_page():
 # ---------------- DASHBOARD ----------------
 def dashboard():
 
-    st.markdown(
-        '<div class="title">⚡ Employability Analytics</div>',
-        unsafe_allow_html=True
-    )
+    st.sidebar.markdown("## ⚡ Navigation")
 
-    page = st.sidebar.radio(
-        "Dashboard",
+    page = st.sidebar.selectbox(
+        "Choose Section",
         [
-            "Resume Analysis",
-            "Skill Gap",
-            "Job Roles"
+            "🏠 Home",
+            "📄 Resume Analysis",
+            "📊 Skill Gap",
+            "💼 Job Roles",
+            "⚙ Profile"
         ]
     )
 
-    # ---------------- RESUME ----------------
-    if page == "Resume Analysis":
+    st.markdown(
+        '<div class="title">AI Employability Dashboard</div>',
+        unsafe_allow_html=True
+    )
 
-        st.markdown('<div class="card">', unsafe_allow_html=True)
+    # ---------------- HOME ----------------
+    if page=="🏠 Home":
+
+        col1,col2,col3=st.columns(3)
+
+        with col1:
+            st.markdown("""
+            <div class="card">
+            <h2>📈 Score</h2>
+            <h1>87%</h1>
+            </div>
+            """,unsafe_allow_html=True)
+
+        with col2:
+            st.markdown("""
+            <div class="card">
+            <h2>❌ Missing Skills</h2>
+            <h1>4</h1>
+            </div>
+            """,unsafe_allow_html=True)
+
+        with col3:
+            st.markdown("""
+            <div class="card">
+            <h2>💼 Roles</h2>
+            <h1>5</h1>
+            </div>
+            """,unsafe_allow_html=True)
+
+    # ---------------- RESUME ----------------
+    elif page=="📄 Resume Analysis":
 
         st.file_uploader("Upload Resume PDF")
         st.text_area("Paste Job Description")
 
-        if st.button("Analyze Resume"):
-
-            score = random.randint(65,95)
-
-            st.metric(
-                "Employability Score",
-                f"{score}%"
-            )
-
+        if st.button("Analyze"):
+            score=random.randint(65,95)
+            st.metric("Employability Score",f"{score}%")
             st.progress(score/100)
 
-        st.markdown('</div>', unsafe_allow_html=True)
-
     # ---------------- SKILL GAP ----------------
-    elif page == "Skill Gap":
+    elif page=="📊 Skill Gap":
 
-        st.subheader("📊 Skill Gap Heatmap")
-
-        col1,col2 = st.columns(2)
-
-        skills = {
+        skills={
             "Python":85,
             "SQL":70,
             "Machine Learning":55,
-            "Cloud":45,
-            "Docker":35,
-            "System Design":25
+            "Cloud":45
         }
 
-        with col1:
-            for skill,val in list(skills.items())[:3]:
-                st.markdown(
-                    f"""
-                    <div class="card">
-                    <h3>{skill}</h3>
-                    <h2>{val}%</h2>
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
-
-        with col2:
-            for skill,val in list(skills.items())[3:]:
-                st.markdown(
-                    f"""
-                    <div class="card">
-                    <h3>{skill}</h3>
-                    <h2>{val}%</h2>
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
-
-        st.write("### 🚀 Recommended Improvements")
-
-        improve = [
-            "Complete AWS Certification",
-            "Build Dockerized Projects",
-            "Practice SQL Joins",
-            "Master API Development"
-        ]
-
-        for i in improve:
-            st.success(i)
+        for k,v in skills.items():
+            st.write(k)
+            st.progress(v/100)
 
     # ---------------- JOB ROLES ----------------
-    elif page == "Job Roles":
+    elif page=="💼 Job Roles":
 
-        st.subheader("💼 AI Recommended Roles")
-
-        roles = [
-            {"role":"Data Analyst","match":"92%"},
-            {"role":"Backend Developer","match":"88%"},
-            {"role":"ML Engineer","match":"79%"},
-            {"role":"Cloud Associate","match":"72%"}
+        roles=[
+            "Data Analyst",
+            "Backend Developer",
+            "ML Engineer",
+            "Cloud Associate"
         ]
 
-        cols = st.columns(2)
+        for r in roles:
+            st.markdown(
+                f"""
+                <div class="card">
+                <h2>{r}</h2>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
-        for idx,r in enumerate(roles):
+    # ---------------- PROFILE ----------------
+    elif page=="⚙ Profile":
 
-            with cols[idx % 2]:
+        st.markdown("""
+        <div class="card">
+        <h2>User Profile</h2>
+        <p>Username: Active User</p>
+        <p>Status: Logged In</p>
+        </div>
+        """,unsafe_allow_html=True)
 
-                st.markdown(
-                    f"""
-                    <div class="card">
-                    <h2>{r['role']}</h2>
-                    <h1>{r['match']}</h1>
-                    <p>Role Match Accuracy</p>
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
-
-    if st.sidebar.button("Logout"):
-        st.session_state.logged_in = False
+    if st.sidebar.button("🚪 Logout"):
+        st.session_state.logged_in=False
         st.rerun()
 
 
