@@ -1,75 +1,132 @@
 import streamlit as st
 from backend import register_user, login_user
-import random
 
-# ---------------- PAGE CONFIG ----------------
 st.set_page_config(
-    page_title="AI Employability Platform",
+    page_title="AI Employability",
     page_icon="⚡",
     layout="wide"
 )
 
-# ---------------- PREMIUM CSS ----------------
+# ---------------- ADVANCED ANIMATION CSS ----------------
 st.markdown("""
 <style>
+
 .stApp{
-    background:#0a0f1f;
-    color:white;
+    background:linear-gradient(-45deg,#020617,#0f172a,#111827,#1e293b);
+    background-size:400% 400%;
+    animation:bgmove 15s ease infinite;
+    overflow:hidden;
 }
 
-/* Sidebar */
-section[data-testid="stSidebar"]{
-    background:linear-gradient(180deg,#111827,#0f172a);
-    border-right:2px solid #00eaff;
+@keyframes bgmove{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
 }
 
-/* Cards */
-.card{
-    background:#111827;
-    padding:25px;
-    border-radius:20px;
-    border:1px solid #00eaff55;
-    box-shadow:0 0 20px #00eaff22;
-    margin:15px 0;
-    transition:0.4s;
+/* floating blobs */
+.blob{
+position:absolute;
+border-radius:50%;
+filter:blur(70px);
+animation:float 12s infinite ease-in-out;
+opacity:0.45;
 }
 
-.card:hover{
-    transform:translateY(-8px);
-    box-shadow:0 0 35px #00eaff88;
+.blob1{
+width:300px;
+height:300px;
+background:#00eaff;
+top:5%;
+left:8%;
 }
 
-/* Buttons */
+.blob2{
+width:350px;
+height:350px;
+background:#8b5cf6;
+bottom:10%;
+right:8%;
+animation-delay:4s;
+}
+
+@keyframes float{
+0%,100%{transform:translateY(0px);}
+50%{transform:translateY(-70px);}
+}
+
+/* login glass card */
+.login-card{
+background:rgba(255,255,255,0.07);
+backdrop-filter:blur(28px);
+border:1px solid rgba(255,255,255,0.15);
+padding:45px;
+border-radius:28px;
+box-shadow:0 0 50px rgba(0,234,255,0.25);
+animation:pulse 4s infinite;
+}
+
+@keyframes pulse{
+0%,100%{box-shadow:0 0 30px rgba(0,234,255,0.18);}
+50%{box-shadow:0 0 70px rgba(0,234,255,0.45);}
+}
+
+.hero{
+font-size:72px;
+font-weight:900;
+background:linear-gradient(90deg,#00eaff,#8b5cf6);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+animation:glow 3s infinite alternate;
+}
+
+@keyframes glow{
+from{text-shadow:0 0 20px #00eaff;}
+to{text-shadow:0 0 45px #8b5cf6;}
+}
+
+.subtitle{
+font-size:22px;
+color:#cbd5e1;
+line-height:1.7;
+}
+
+.stTextInput input{
+background:#0f172a !important;
+color:white !important;
+border:1px solid #00eaff !important;
+border-radius:16px !important;
+height:52px;
+}
+
 .stButton>button{
-    width:100%;
-    background:linear-gradient(90deg,#00eaff,#00b8ff);
-    color:black;
-    font-weight:bold;
-    border:none;
-    border-radius:14px;
-    height:50px;
-    font-size:16px;
+width:100%;
+height:52px;
+border:none;
+border-radius:16px;
+font-size:18px;
+font-weight:800;
+background:linear-gradient(90deg,#00eaff,#8b5cf6);
+color:white;
+transition:.3s;
 }
 
-/* Inputs */
-.stTextInput input,
-textarea{
-    background:#1f2937 !important;
-    color:white !important;
-    border-radius:14px !important;
-    border:1px solid #00eaff !important;
+.stButton>button:hover{
+transform:scale(1.03);
+box-shadow:0 0 35px #00eaff;
 }
 
-/* Title */
-.title{
-    font-size:42px;
-    font-weight:800;
-    color:#00eaff;
-    text-align:center;
-    margin-bottom:30px;
+section[data-testid="stSidebar"]{
+display:none;
 }
+
 </style>
+
+<div class="blob blob1"></div>
+<div class="blob blob2"></div>
+
 """, unsafe_allow_html=True)
+
 
 # ---------------- SESSION ----------------
 if "logged_in" not in st.session_state:
@@ -79,256 +136,89 @@ if "logged_in" not in st.session_state:
 # ---------------- LOGIN PAGE ----------------
 def login_page():
 
-    col1, col2 = st.columns([1.2,1])
+    left,right = st.columns([1.35,1])
 
-    with col1:
+    with left:
+
         st.markdown("""
         <div style="
-        height:90vh;
+        height:95vh;
         display:flex;
         flex-direction:column;
         justify-content:center;
-        padding:40px;
+        padding-left:40px;
         ">
-        <h1 style="
-        font-size:60px;
-        color:#00eaff;
-        font-weight:900;">
-        ⚡ AI Employability
-        </h1>
 
-        <h3 style="color:white;">
-        Smart Resume Intelligence Platform
-        </h3>
+        <div class="hero">
+        AI Employability
+        </div>
 
-        <p style="
-        font-size:20px;
-        color:#9ca3af;">
-        Analyze resumes, detect missing skills,
-        improve employability score and discover
-        perfect job roles using AI.
-        </p>
+        <br>
+
+        <div class="subtitle">
+        Advanced AI-powered employability intelligence platform.
+
+        <br><br>
+
+        • Resume Intelligence Engine  
+        • Skill Gap Prediction  
+        • Placement Readiness Analytics  
+        • AI Job Role Matching  
+        • Career Growth Insights
+
+        </div>
+
         </div>
         """, unsafe_allow_html=True)
 
-    with col2:
+    with right:
+
+        st.markdown('<div style="margin-top:90px;" class="login-card">', unsafe_allow_html=True)
 
         st.markdown("""
-        <div class="card" style="margin-top:80px;">
-        """, unsafe_allow_html=True)
-
-        st.markdown("""
-        <h2 style="
+        <h1 style="
         text-align:center;
-        color:#00eaff;">
+        color:white;
+        font-weight:900;">
         Welcome Back
-        </h2>
+        </h1>
         """, unsafe_allow_html=True)
 
-        tab1, tab2 = st.tabs(
-            ["🔐 Login", "📝 Register"]
-        )
+        tab1,tab2=st.tabs(["🔐 Login","✨ Register"])
 
-        # LOGIN
         with tab1:
 
-            u = st.text_input(
-                "Username",
-                key="login_user"
-            )
+            u=st.text_input("Username")
+            p=st.text_input("Password",type="password")
 
-            p = st.text_input(
-                "Password",
-                type="password",
-                key="login_pass"
-            )
-
-            if st.button("Login Securely"):
+            if st.button("Secure Login"):
 
                 if login_user(u,p):
+                    st.success("Access Granted")
                     st.session_state.logged_in=True
-                    st.success("Access Granted ✅")
                     st.rerun()
-
                 else:
-                    st.error("Invalid Credentials ❌")
+                    st.error("Invalid Credentials")
 
-        # REGISTER
         with tab2:
 
-            nu = st.text_input(
-                "Create Username",
-                key="reg_user"
-            )
-
-            np = st.text_input(
-                "Create Password",
-                type="password",
-                key="reg_pass"
-            )
+            nu=st.text_input("Create Username")
+            np=st.text_input("Create Password",type="password")
 
             if st.button("Create Account"):
 
                 if register_user(nu,np):
-                    st.success(
-                        "Registered Successfully ✅"
-                    )
+                    st.success("Registered Successfully")
                 else:
-                    st.error("Username Exists ❌")
+                    st.error("Username Exists")
 
-        st.markdown("</div>",
-                    unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
 
 
 # ---------------- DASHBOARD ----------------
 def dashboard():
-
-    st.sidebar.markdown("## ⚡ Navigation")
-
-    page = st.sidebar.selectbox(
-        "Choose Section",
-        [
-            "🏠 Home",
-            "📄 Resume Analysis",
-            "📊 Skill Gap",
-            "💼 Job Roles",
-            "⚙ Profile"
-        ]
-    )
-
-    st.markdown(
-        '<div class="title">AI Employability Dashboard</div>',
-        unsafe_allow_html=True
-    )
-
-    # HOME
-    if page == "🏠 Home":
-
-        col1,col2,col3=st.columns(3)
-
-        with col1:
-            st.markdown("""
-            <div class="card">
-            <h2>📈 Employability</h2>
-            <h1>87%</h1>
-            </div>
-            """,unsafe_allow_html=True)
-
-        with col2:
-            st.markdown("""
-            <div class="card">
-            <h2>❌ Missing Skills</h2>
-            <h1>4</h1>
-            </div>
-            """,unsafe_allow_html=True)
-
-        with col3:
-            st.markdown("""
-            <div class="card">
-            <h2>💼 Roles</h2>
-            <h1>5</h1>
-            </div>
-            """,unsafe_allow_html=True)
-
-    # RESUME
-    elif page == "📄 Resume Analysis":
-
-        st.file_uploader("Upload Resume PDF")
-        st.text_area("Paste Job Description")
-
-        if st.button("Analyze Resume"):
-            score=random.randint(65,95)
-            st.metric(
-                "Employability Score",
-                f"{score}%"
-            )
-            st.progress(score/100)
-
-    # SKILL GAP
-    elif page=="📊 Skill Gap":
-
-        st.subheader(
-            "📊 Advanced Skill Gap Intelligence"
-        )
-
-        employability = 78
-        st.metric(
-            "Overall Readiness",
-            f"{employability}%"
-        )
-        st.progress(employability/100)
-
-        skills = {
-            "Python":92,
-            "SQL":81,
-            "Machine Learning":67,
-            "Cloud":52,
-            "Docker":38,
-            "System Design":29
-        }
-
-        for skill,val in skills.items():
-
-            status = (
-                "✅ Strong"
-                if val>80 else
-                "⚠ Moderate"
-                if val>55 else
-                "❌ Weak"
-            )
-
-            st.markdown(f"""
-            <div class="card">
-            <h3>{skill}</h3>
-            <h2>{val}%</h2>
-            <p>{status}</p>
-            </div>
-            """,unsafe_allow_html=True)
-
-        st.write("### 🚀 Improvement Roadmap")
-
-        roadmap=[
-            "Master Docker",
-            "Learn AWS Deployment",
-            "Practice SQL Problems",
-            "Study System Design"
-        ]
-
-        for r in roadmap:
-            st.success(r)
-
-    # JOB ROLES
-    elif page=="💼 Job Roles":
-
-        roles=[
-            ("Data Analyst","92%"),
-            ("Backend Developer","88%"),
-            ("ML Engineer","79%"),
-            ("Cloud Associate","72%")
-        ]
-
-        for role,match in roles:
-
-            st.markdown(f"""
-            <div class="card">
-            <h2>{role}</h2>
-            <h1>{match}</h1>
-            <p>Role Match Accuracy</p>
-            </div>
-            """,unsafe_allow_html=True)
-
-    # PROFILE
-    elif page=="⚙ Profile":
-
-        st.markdown("""
-        <div class="card">
-        <h2>User Profile</h2>
-        <p>Status: Logged In</p>
-        <p>Platform: AI Skill Assessment</p>
-        </div>
-        """,unsafe_allow_html=True)
-
-    if st.sidebar.button("🚪 Logout"):
+    st.success("Login Successful 🚀")
+    if st.button("Logout"):
         st.session_state.logged_in=False
         st.rerun()
 
