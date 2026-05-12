@@ -3,75 +3,114 @@ from backend import register_user, login_user
 import random
 
 st.set_page_config(
-    page_title="AI Employability Platform",
+    page_title="Glass Cosmos AI",
     page_icon="⚡",
     layout="wide"
 )
 
-# ---------------- ADVANCED CSS ----------------
+# ---------------- PREMIUM CSS ----------------
 st.markdown("""
 <style>
 
 .stApp{
-background:linear-gradient(-45deg,#020617,#0f172a,#111827,#1e293b);
-background-size:400% 400%;
-animation:bgmove 15s ease infinite;
+background:
+radial-gradient(circle at top left,#00eaff22,transparent 25%),
+radial-gradient(circle at bottom right,#8b5cf622,transparent 25%),
+linear-gradient(135deg,#020617,#0f172a,#111827);
 color:white;
+overflow:hidden;
 }
 
-@keyframes bgmove{
-0%{background-position:0% 50%;}
-50%{background-position:100% 50%;}
-100%{background-position:0% 50%;}
+/* Floating orbs */
+.orb{
+position:absolute;
+border-radius:50%;
+filter:blur(100px);
+opacity:.25;
+animation:float 12s infinite ease-in-out;
+}
+
+.o1{
+width:320px;height:320px;
+background:#00eaff;
+top:10%;left:5%;
+}
+
+.o2{
+width:400px;height:400px;
+background:#8b5cf6;
+bottom:5%;right:5%;
+animation-delay:4s;
+}
+
+@keyframes float{
+0%,100%{transform:translateY(0);}
+50%{transform:translateY(-60px);}
 }
 
 .card{
 background:rgba(255,255,255,.08);
-backdrop-filter:blur(22px);
-padding:28px;
-border-radius:22px;
+backdrop-filter:blur(30px);
+padding:30px;
+border-radius:28px;
 border:1px solid rgba(255,255,255,.12);
-margin:12px 0;
-box-shadow:0 0 30px rgba(0,234,255,.15);
+margin:15px 0;
+box-shadow:0 0 30px rgba(0,234,255,.12);
 transition:.4s;
 }
 
 .card:hover{
 transform:translateY(-8px);
-box-shadow:0 0 45px rgba(0,234,255,.35);
+box-shadow:0 0 55px rgba(0,234,255,.25);
 }
 
 .hero{
-font-size:65px;
+font-size:76px;
 font-weight:900;
-background:linear-gradient(90deg,#00eaff,#8b5cf6);
+background:linear-gradient(90deg,#00eaff,#8b5cf6,#fff);
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
 }
 
+.subhero{
+font-size:20px;
+color:#cbd5e1;
+line-height:1.8;
+}
+
 .stButton>button{
 width:100%;
-height:50px;
+height:55px;
 border:none;
-border-radius:16px;
-font-weight:bold;
+border-radius:18px;
+font-weight:800;
 background:linear-gradient(90deg,#00eaff,#8b5cf6);
 color:white;
+box-shadow:0 0 25px #00eaff55;
+}
+
+.stButton>button:hover{
+transform:scale(1.03);
+box-shadow:0 0 40px #00eaffaa;
 }
 
 .stTextInput input,
 textarea{
-background:#0f172a !important;
-color:white !important;
-border:1px solid #00eaff !important;
-border-radius:14px !important;
+background:rgba(255,255,255,.06)!important;
+color:white!important;
+border:1px solid #00eaff!important;
+border-radius:18px!important;
 }
 
 section[data-testid="stSidebar"]{
-background:#0f172a;
+background:rgba(15,23,42,.95);
+backdrop-filter:blur(25px);
 }
 
 </style>
+
+<div class="orb o1"></div>
+<div class="orb o2"></div>
 """,unsafe_allow_html=True)
 
 # ---------------- SESSION ----------------
@@ -82,21 +121,40 @@ if "logged_in" not in st.session_state:
 # ---------------- LOGIN ----------------
 def login_page():
 
-    left,right=st.columns([1.5,1])
+    left,right=st.columns([1.6,1])
 
     with left:
         st.markdown("""
-        <div style="height:90vh;display:flex;flex-direction:column;justify-content:center;">
-        <div class="hero">AI Employability</div>
-        <h3>Future Career Intelligence Platform</h3>
-        <p>Analyze resumes, predict employability, identify skill gaps and optimize placements.</p>
+        <div style="
+        height:95vh;
+        display:flex;
+        flex-direction:column;
+        justify-content:center;
+        padding-left:50px;
+        ">
+
+        <div class="hero">Glass Cosmos</div>
+
+        <div class="subhero">
+        The next-generation employability intelligence platform.
+
+        <br><br>
+
+        • Resume Intelligence  
+        • Skill Gap Forecasting  
+        • AI Career Optimization  
+        • Placement Prediction  
+        • Learning Acceleration
+        </div>
+
         </div>
         """,unsafe_allow_html=True)
 
     with right:
 
-        st.markdown('<div class="card">',
-                    unsafe_allow_html=True)
+        st.markdown('<div class="card">',unsafe_allow_html=True)
+
+        st.markdown("<h2>Secure Access</h2>",unsafe_allow_html=True)
 
         tab1,tab2=st.tabs(["🔐 Login","✨ Register"])
 
@@ -104,7 +162,7 @@ def login_page():
             u=st.text_input("Username",key="l1")
             p=st.text_input("Password",type="password",key="l2")
 
-            if st.button("Secure Login"):
+            if st.button("Login"):
                 if login_user(u,p):
                     st.session_state.logged_in=True
                     st.rerun()
@@ -115,7 +173,7 @@ def login_page():
             u=st.text_input("Create Username",key="r1")
             p=st.text_input("Create Password",type="password",key="r2")
 
-            if st.button("Create Account"):
+            if st.button("Register"):
                 if register_user(u,p):
                     st.success("Registered")
                 else:
@@ -124,142 +182,103 @@ def login_page():
         st.markdown("</div>",unsafe_allow_html=True)
 
 
-# ---------------- AI ----------------
-def ai_assistant():
-
-    st.subheader("🤖 AI Career Mentor")
-
-    q=st.text_input("Ask Question")
-
-    if st.button("Ask AI"):
-
-        q=q.lower()
-
-        if "data analyst" in q:
-            st.success("Learn Python, SQL, Tableau, Projects")
-
-        elif "ml" in q:
-            st.success("Learn ML, DL, Deployment, Cloud")
-
-        elif "cloud" in q:
-            st.success("Learn AWS, Docker, Kubernetes")
-
-        else:
-            st.info("Build strong projects + certifications")
-
-
 # ---------------- DASHBOARD ----------------
 def dashboard():
 
-    page=st.sidebar.selectbox(
-        "Navigation",
-        [
-            "🏠 Executive Dashboard",
-            "📄 Resume Intelligence",
-            "📊 Skill Analytics",
-            "💼 Job Match Engine",
-            "🛣 Learning Roadmap",
-            "🤖 AI Assistant",
-            "👤 Profile"
-        ]
-    )
+    page=st.sidebar.selectbox("Navigation",[
+        "🏠 Executive Dashboard",
+        "📄 Resume Scanner",
+        "📊 Skill Matrix",
+        "💼 Career Engine",
+        "🛣 Learning Roadmap",
+        "👤 Profile"
+    ])
 
-    # HOME
     if page=="🏠 Executive Dashboard":
 
         st.markdown('<div class="hero">Dashboard</div>',
-                    unsafe_allow_html=True)
+        unsafe_allow_html=True)
 
         c1,c2,c3,c4=st.columns(4)
 
-        c1.metric("Employability","87%","+5%")
-        c2.metric("Missing Skills","4","-2")
-        c3.metric("Jobs Matched","12","+4")
-        c4.metric("Placement Chance","82%","+8%")
+        c1.metric("Employability","91%","+8%")
+        c2.metric("Skills Matched","14","+5")
+        c3.metric("Job Matches","18","+6")
+        c4.metric("Placement Chance","89%","+10%")
 
         st.markdown("""
         <div class="card">
-        <h2>AI Insights</h2>
-        <p>You are highly suited for backend and data roles. Improve cloud + deployment skills.</p>
+        <h2>AI Executive Insight</h2>
+        <p>
+        Strong backend and data capability.
+        Improve AWS + deployment to unlock senior opportunities.
+        </p>
         </div>
         """,unsafe_allow_html=True)
 
-    # RESUME
-    elif page=="📄 Resume Intelligence":
+    elif page=="📄 Resume Scanner":
 
-        st.file_uploader("Upload Resume PDF")
-        st.text_area("Paste Job Description")
+        st.file_uploader("Upload Resume")
+        st.text_area("Paste JD")
 
-        if st.button("Analyze Resume"):
+        if st.button("Analyze"):
 
-            score=random.randint(70,95)
+            score=random.randint(70,96)
 
-            st.metric("Resume Match Score",f"{score}%")
+            st.metric("Resume Match",f"{score}%")
             st.progress(score/100)
 
-            st.success("Strong Python profile")
-            st.warning("Missing Docker / AWS")
+            st.success("Excellent Python + SQL")
 
-    # SKILL
-    elif page=="📊 Skill Analytics":
+    elif page=="📊 Skill Matrix":
 
         skills={
-            "Python":92,
-            "SQL":85,
-            "Machine Learning":74,
-            "Cloud":55,
-            "Docker":41,
-            "System Design":35
+            "Python":94,
+            "SQL":87,
+            "ML":78,
+            "Cloud":58,
+            "Docker":44
         }
 
         for s,v in skills.items():
-            st.write(f"{s} - {v}%")
+            st.write(f"{s} • {v}%")
             st.progress(v/100)
 
-    # JOB
-    elif page=="💼 Job Match Engine":
+    elif page=="💼 Career Engine":
 
-        jobs=[
-            ("Data Analyst",92),
-            ("Backend Developer",88),
-            ("ML Engineer",79),
-            ("Cloud Engineer",72)
+        roles=[
+            ("Senior Data Analyst","94%"),
+            ("Backend Engineer","90%"),
+            ("ML Engineer","82%"),
+            ("Cloud Engineer","74%")
         ]
 
-        for role,score in jobs:
+        for r,m in roles:
             st.markdown(f"""
             <div class="card">
-            <h2>{role}</h2>
-            <h1>{score}% Match</h1>
+            <h2>{r}</h2>
+            <h1>{m}</h1>
             </div>
             """,unsafe_allow_html=True)
 
-    # ROADMAP
     elif page=="🛣 Learning Roadmap":
 
-        roadmap=[
-            "Week 1-2 → SQL Mastery",
-            "Week 3-4 → Docker",
-            "Week 5-6 → AWS",
-            "Week 7-8 → Deployment"
-        ]
+        for x in [
+            "Week 1 → SQL Advanced",
+            "Week 2 → Docker",
+            "Week 3 → AWS",
+            "Week 4 → Deployment"
+        ]:
+            st.success(x)
 
-        for r in roadmap:
-            st.success(r)
-
-    # AI
-    elif page=="🤖 AI Assistant":
-        ai_assistant()
-
-    # PROFILE
     elif page=="👤 Profile":
 
         st.markdown("""
         <div class="card">
-        <h2>User Profile Analytics</h2>
-        <p>Status: Active</p>
-        <p>Resume Score Trend: Rising</p>
-        <p>Learning Consistency: Strong</p>
+        <h2>Performance Analytics</h2>
+        <p>Consistency: Excellent</p>
+        <p>Career Momentum: Rising</p>
+        <p>Placement Readiness: High</p>
         </div>
         """,unsafe_allow_html=True)
 
