@@ -1,29 +1,21 @@
 import sqlite3
 import hashlib
-from datetime import datetime
+
+DB = "users.db"
 
 
-DB_NAME = "users.db"
+def connect():
+    return sqlite3.connect(DB)
 
 
-# ---------------- CONNECT ----------------
-def get_connection():
-    return sqlite3.connect(DB_NAME)
-
-
-# ---------------- CREATE TABLE ----------------
 def init_db():
+    conn = connect()
+    cur = conn.cursor()
 
-    conn = get_connection()
-    cursor = conn.cursor()
-
-    cursor.execute("""
+    cur.execute("""
     CREATE TABLE IF NOT EXISTS users(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL,
-        created_at TEXT,
-        last_login TEXT
+        username TEXT PRIMARY KEY,
+        password TEXT
     )
     """)
 
@@ -34,125 +26,46 @@ def init_db():
 init_db()
 
 
-# ---------------- HASH PASSWORD ----------------
-def hash_password(password):
+def hash_pass(password):
     return hashlib.sha256(
         password.encode()
     ).hexdigest()
 
 
-# ---------------- REGISTER ----------------
 def register_user(username,password):
 
-    if not username or len(username)<3:
-        return False
-
-    if not password or len(password)<4:
-        return False
-
-    conn = get_connection()
-    cursor = conn.cursor()
-
-    hashed = hash_password(password)
+    conn=connect()
+    cur=conn.cursor()
 
     try:
-
-        cursor.execute("""
-        INSERT INTO users(
-            username,
-            password,
-            created_at,
-            last_login
+        cur.execute(
+            "INSERT INTO users VALUES (?,?)",
+            (username,hash_pass(password))
         )
-        VALUES(?,?,?,?)
-        """,(
-            username,
-            hashed,
-            str(datetime.now()),
-            ""
-        ))
 
         conn.commit()
         conn.close()
-
         return True
 
-    except sqlite3.IntegrityError:
+    except:
         conn.close()
         return False
 
 
-# ---------------- LOGIN ----------------
 def login_user(username,password):
 
-    conn = get_connection()
-    cursor = conn.cursor()
+    conn=connect()
+    cur=conn.cursor()
 
-    hashed = hash_password(password)
-
-    cursor.execute("""
+    cur.execute("""
     SELECT *
     FROM users
     WHERE username=?
     AND password=?
-    """,(username,hashed))
+    """,(username,hash_pass(password)))
 
-    user = cursor.fetchone()
-
-    if user:
-
-        cursor.execute("""
-        UPDATE users
-        SET last_login=?
-        WHERE username=?
-        """,(
-            str(datetime.now()),
-            username
-        ))
-
-        conn.commit()
-        conn.close()
-
-        return True
-
-    conn.close()
-    return False
-
-
-# ---------------- TOTAL USERS ----------------
-def total_users():
-
-    conn = get_connection()
-    cursor = conn.cursor()
-
-    cursor.execute("""
-    SELECT COUNT(*)
-    FROM users
-    """)
-
-    count = cursor.fetchone()[0]
+    user=cur.fetchone()
 
     conn.close()
 
-    return count
-
-
-# ---------------- GET USER ----------------
-def get_user(username):
-
-    conn = get_connection()
-    cursor = conn.cursor()
-
-    cursor.execute("""
-    SELECT username,
-           created_at,
-           last_login
-    FROM users
-    WHERE username=?
-    """,(username,))
-
-    user = cursor.fetchone()
-
-    conn.close()
-
-    return user
+    return user is not None
