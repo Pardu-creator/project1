@@ -5,92 +5,116 @@ import pandas as pd
 
 # ---------------- CONFIG ----------------
 st.set_page_config(
-    page_title="AI Employability Platform",
-    page_icon="🚀",
+    page_title="AI Employability",
+    page_icon="⚡",
     layout="wide"
 )
 
-# ---------------- CSS ----------------
+# ---------------- NEW DESIGN ----------------
 st.markdown("""
 <style>
+
 .stApp{
-background:linear-gradient(-45deg,#141e30,#243b55,#302b63,#ff512f);
-background-size:400% 400%;
-animation:bg 15s ease infinite;
+background:#0b0f19;
 color:white;
 }
 
-@keyframes bg{
-0%{background-position:0% 50%;}
-50%{background-position:100% 50%;}
-100%{background-position:0% 50%;}
+/* Sidebar */
+section[data-testid="stSidebar"]{
+background:#111827;
+border-right:2px solid #00f7ff;
 }
 
-.glass{
-background:rgba(255,255,255,0.12);
-border-radius:25px;
-backdrop-filter:blur(20px);
-padding:30px;
-box-shadow:0 8px 32px rgba(0,0,0,0.35);
-margin:15px;
+/* Cards */
+.card{
+background:#111827;
+padding:25px;
+border-radius:18px;
+border:1px solid #00f7ff55;
+box-shadow:0 0 20px #00f7ff22;
+transition:0.4s;
 }
 
-.glow{
+.card:hover{
+transform:translateY(-8px);
+box-shadow:0 0 35px #00f7ff88;
+}
+
+/* Title */
+.title{
+font-size:42px;
+font-weight:800;
+color:#00f7ff;
 text-align:center;
-font-size:48px;
-font-weight:bold;
-animation:glow 2s infinite alternate;
+margin-bottom:30px;
 }
 
-@keyframes glow{
-from{text-shadow:0 0 10px white;}
-to{text-shadow:0 0 30px #ff00ff;}
-}
-
+/* Buttons */
 .stButton>button{
-width:100%;
-background:linear-gradient(90deg,#ff512f,#dd2476);
-color:white;
+background:#00f7ff;
+color:black;
+font-weight:bold;
 border:none;
-border-radius:15px;
-font-size:18px;
+border-radius:12px;
+width:100%;
 }
+
+/* Inputs */
+.stTextInput input,
+textarea{
+background:#1f2937 !important;
+color:white !important;
+border-radius:12px !important;
+border:1px solid #00f7ff !important;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
 # ---------------- SESSION ----------------
 if "logged_in" not in st.session_state:
-    st.session_state.logged_in=False
+    st.session_state.logged_in = False
 
 
 # ---------------- LOGIN ----------------
 def login_page():
 
     st.markdown(
-        '<div class="glow">🚀 AI Employability Platform</div>',
+        '<div class="title">⚡ AI Employability Platform</div>',
         unsafe_allow_html=True
     )
 
-    tab1,tab2=st.tabs(["Login","Register"])
+    menu = st.sidebar.radio(
+        "Menu",
+        ["Login","Register"]
+    )
 
-    with tab1:
-        u=st.text_input("Username")
-        p=st.text_input("Password",type="password")
+    if menu == "Login":
+
+        u = st.text_input("Username")
+        p = st.text_input(
+            "Password",
+            type="password"
+        )
 
         if st.button("Login"):
             if login_user(u,p):
                 st.session_state.logged_in=True
                 st.rerun()
             else:
-                st.error("Invalid Login")
+                st.error("Invalid login")
 
-    with tab2:
-        nu=st.text_input("New Username")
-        np=st.text_input("New Password",type="password")
+    else:
+
+        u = st.text_input("Create Username")
+        p = st.text_input(
+            "Create Password",
+            type="password"
+        )
 
         if st.button("Register"):
-            if register_user(nu,np):
-                st.success("Registered")
+            if register_user(u,p):
+                st.success("Registered Successfully")
             else:
                 st.error("User Exists")
 
@@ -99,96 +123,82 @@ def login_page():
 def dashboard():
 
     st.markdown(
-        '<div class="glow">🎯 AI Employability Dashboard</div>',
+        '<div class="title">⚡ Employability Analytics</div>',
         unsafe_allow_html=True
     )
 
-    col1,col2=st.columns([2,2])
+    page = st.sidebar.radio(
+        "Dashboard",
+        [
+            "Resume Analysis",
+            "Skill Gap",
+            "Job Roles"
+        ]
+    )
 
-    with col1:
-        resume=st.file_uploader(
+    # Resume
+    if page == "Resume Analysis":
+
+        st.markdown('<div class="card">',unsafe_allow_html=True)
+
+        st.file_uploader(
             "Upload Resume PDF"
         )
 
-    with col2:
-        jd=st.text_area(
+        st.text_area(
             "Paste Job Description"
         )
 
-    if st.button("Analyze Resume"):
+        if st.button("Analyze Resume"):
 
-        score=random.randint(65,95)
+            score=random.randint(65,95)
 
-        st.metric(
-            "Employability Score",
-            f"{score}%"
-        )
+            st.metric(
+                "Employability Score",
+                f"{score}%"
+            )
 
-        st.progress(score/100)
+            st.progress(score/100)
 
-        st.write("")
+        st.markdown('</div>',unsafe_allow_html=True)
 
-        # Skill proficiency
-        st.subheader("📊 Skill Proficiency")
+    # Skill Gap
+    elif page=="Skill Gap":
+
+        st.markdown('<div class="card">',unsafe_allow_html=True)
 
         skills={
-            "Python":90,
-            "SQL":75,
-            "Machine Learning":60,
-            "Communication":80,
-            "Cloud":55
+            "Python":85,
+            "SQL":72,
+            "Machine Learning":55,
+            "Cloud":45
         }
 
-        for skill,val in skills.items():
-            st.write(skill)
-            st.progress(val/100)
+        for k,v in skills.items():
+            st.write(k)
+            st.progress(v/100)
 
-        # Missing skills chart
-        st.subheader("❌ Missing Skills")
+        st.markdown('</div>',unsafe_allow_html=True)
 
-        missing=pd.DataFrame({
-            "Skill":[
-                "AWS",
-                "Docker",
-                "Deep Learning",
-                "System Design"
-            ],
-            "Priority":[90,75,80,65]
+    # Job Roles
+    else:
+
+        roles=pd.DataFrame({
+            "Roles":[
+                "Data Analyst",
+                "ML Engineer",
+                "Cloud Associate",
+                "Backend Developer"
+            ]
         })
 
-        st.bar_chart(
-            missing.set_index("Skill")
-        )
+        st.markdown('<div class="card">',unsafe_allow_html=True)
 
-        # Improvement roadmap
-        st.subheader("🚀 Improvement Roadmap")
+        st.table(roles)
 
-        roadmap=[
-            "Learn Docker Deployment",
-            "Build 2 Real-world Projects",
-            "Practice SQL Queries",
-            "Master AWS Basics"
-        ]
+        st.markdown('</div>',unsafe_allow_html=True)
 
-        for i in roadmap:
-            st.success(i)
-
-        # Job Roles
-        st.subheader("💼 Recommended Roles")
-
-        roles=[
-            "Data Analyst",
-            "Backend Developer",
-            "ML Engineer",
-            "Cloud Associate"
-        ]
-
-        cols=st.columns(4)
-
-        for c,r in zip(cols,roles):
-            c.info(r)
-
-    if st.button("Logout"):
+    if st.sidebar.button("Logout"):
         st.session_state.logged_in=False
         st.rerun()
 
