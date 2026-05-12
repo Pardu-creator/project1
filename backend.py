@@ -1,63 +1,96 @@
 import sqlite3
 import hashlib
+from datetime import datetime
 
-DB = "users.db"
+conn = sqlite3.connect(
+    "users.db",
+    check_same_thread=False
+)
 
+cursor = conn.cursor()
 
-def create_db():
-    conn = sqlite3.connect(DB)
-    c = conn.cursor()
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS users(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE,
+    password TEXT,
+    created_at TEXT,
+    last_login TEXT
+)
+""")
 
-    c.execute("""
-    CREATE TABLE IF NOT EXISTS users(
-        username TEXT PRIMARY KEY,
-        password TEXT
-    )
-    """)
-
-    conn.commit()
-    conn.close()
+conn.commit()
 
 
 def hash_password(password):
-    return hashlib.sha256(password.encode()).hexdigest()
+    return hashlib.sha256(
+        password.encode()
+    ).hexdigest()
 
 
-def register_user(username, password):
+def register_user(username,password):
 
-    conn = sqlite3.connect(DB)
-    c = conn.cursor()
+    if len(username)<3:
+        return False
+
+    if len(password)<4:
+        return False
+
+    hashed=hash_password(password)
 
     try:
-        c.execute(
-            "INSERT INTO users VALUES (?,?)",
-            (username, hash_password(password))
+        cursor.execute("""
+        INSERT INTO users(
+        username,password,
+        created_at,last_login
         )
+        VALUES(?,?,?,?)
+        """,(
+            username,
+            hashed,
+            str(datetime.now()),
+            ""
+        ))
+
         conn.commit()
         return True
 
     except:
         return False
 
-    finally:
-        conn.close()
+
+def login_user(username,password):
+
+    hashed=hash_password(password)
+
+    cursor.execute("""
+    SELECT * FROM users
+    WHERE username=?
+    AND password=?
+    """,(username,hashed))
+
+    user=cursor.fetchone()
+
+    if user:
+
+        cursor.execute("""
+        UPDATE users
+        SET last_login=?
+        WHERE username=?
+        """,(str(datetime.now()),username))
+
+        conn.commit()
+
+        return True
+
+    return False
 
 
-def login_user(username, password):
+def total_users():
 
-    conn = sqlite3.connect(DB)
-    c = conn.cursor()
+    cursor.execute("""
+    SELECT COUNT(*)
+    FROM users
+    """)
 
-    c.execute(
-        "SELECT * FROM users WHERE username=? AND password=?",
-        (username, hash_password(password))
-    )
-
-    user = c.fetchone()
-
-    conn.close()
-
-    return user is not None
-
-
-create_db()
+    return cursor.fetchone()[0]
