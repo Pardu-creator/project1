@@ -1,11 +1,8 @@
 import streamlit as st
-from backend import (
-    register_user,
-    login_user,
-    total_users
-)
+from backend import register_user, login_user
 import random
 
+# ---------------- PAGE ----------------
 st.set_page_config(
     page_title="AI Employability",
     page_icon="⚡",
@@ -17,22 +14,13 @@ st.markdown("""
 <style>
 
 .stApp{
-background:linear-gradient(-45deg,#020617,#0f172a,#111827,#1e293b);
-background-size:400% 400%;
-animation:bgmove 15s ease infinite;
+background:linear-gradient(135deg,#020617,#0f172a,#111827);
 color:white;
 }
 
-@keyframes bgmove{
-0%{background-position:0% 50%;}
-50%{background-position:100% 50%;}
-100%{background-position:0% 50%;}
-}
-
-.login-card,.card{
+.card{
 background:rgba(255,255,255,.06);
-backdrop-filter:blur(25px);
-padding:30px;
+padding:25px;
 border-radius:20px;
 margin:15px 0;
 border:1px solid #00eaff33;
@@ -46,17 +34,17 @@ color:#00eaff;
 
 .stButton>button{
 width:100%;
+height:50px;
 background:linear-gradient(90deg,#00eaff,#8b5cf6);
 color:white;
+font-weight:bold;
 border:none;
 border-radius:14px;
-font-weight:bold;
-height:50px;
 }
 
 .stTextInput input,
 textarea{
-background:#0f172a !important;
+background:#1e293b !important;
 color:white !important;
 border:1px solid #00eaff !important;
 border-radius:14px !important;
@@ -86,27 +74,25 @@ def login_page():
         height:90vh;
         display:flex;
         flex-direction:column;
-        justify-content:center;
-        ">
+        justify-content:center;">
+
         <div class="hero">
         AI Employability
         </div>
 
-        <h3>
-        Resume Intelligence Platform
-        </h3>
+        <h3>Career Intelligence Platform</h3>
 
         <p>
-        Analyze resumes, detect missing skills,
-        predict employability and recommend
-        ideal career paths using AI.
+        Analyze resumes, predict employability,
+        detect skill gaps and get AI guidance.
         </p>
+
         </div>
         """,unsafe_allow_html=True)
 
     with right:
 
-        st.markdown('<div class="login-card">',
+        st.markdown('<div class="card">',
                     unsafe_allow_html=True)
 
         tab1,tab2=st.tabs([
@@ -114,33 +100,45 @@ def login_page():
             "✨ Register"
         ])
 
+        # LOGIN
         with tab1:
 
-            u=st.text_input("Username")
-            p=st.text_input(
+            user=st.text_input(
+                "Username",
+                key="login_user"
+            )
+
+            pwd=st.text_input(
                 "Password",
-                type="password"
+                type="password",
+                key="login_pass"
             )
 
             if st.button("Secure Login"):
 
-                if login_user(u,p):
+                if login_user(user,pwd):
                     st.session_state.logged_in=True
                     st.rerun()
                 else:
                     st.error("Invalid Login")
 
+        # REGISTER
         with tab2:
 
-            nu=st.text_input("Create Username")
-            np=st.text_input(
-                "Create Password",
-                type="password"
+            user=st.text_input(
+                "New Username",
+                key="reg_user"
+            )
+
+            pwd=st.text_input(
+                "New Password",
+                type="password",
+                key="reg_pass"
             )
 
             if st.button("Create Account"):
 
-                if register_user(nu,np):
+                if register_user(user,pwd):
                     st.success("Registered")
                 else:
                     st.error("User Exists")
@@ -149,12 +147,12 @@ def login_page():
                     unsafe_allow_html=True)
 
 
-# ---------------- AI CHATBOT ----------------
+# ---------------- AI ASSISTANT ----------------
 def ai_assistant():
 
     st.subheader("🤖 Career AI Assistant")
 
-    q=st.text_input("Ask Question")
+    q=st.text_input("Ask a Question")
 
     if st.button("Ask AI"):
 
@@ -166,21 +164,21 @@ Learn:
 - Python
 - SQL
 - Power BI
-- Projects
+- Data Visualization
 """)
 
         elif "ml" in q:
             st.success("""
 Roadmap:
 - Python
-- ML
+- Machine Learning
 - Deep Learning
 - Deployment
 """)
 
         elif "cloud" in q:
             st.success("""
-Cloud Path:
+Cloud:
 - AWS
 - Docker
 - Kubernetes
@@ -188,10 +186,7 @@ Cloud Path:
 
         else:
             st.info("""
-Improve:
-- Build projects
-- Learn missing skills
-- Certifications
+Build projects and improve skills.
 """)
 
 
@@ -205,8 +200,7 @@ def dashboard():
             "📄 Resume Analysis",
             "📊 Skill Gap",
             "💼 Job Roles",
-            "🤖 AI Assistant",
-            "⚙ Profile"
+            "🤖 AI Assistant"
         ]
     )
 
@@ -215,14 +209,9 @@ def dashboard():
 
         c1,c2,c3=st.columns(3)
 
-        with c1:
-            st.metric("Employability","87%")
-
-        with c2:
-            st.metric("Missing Skills","4")
-
-        with c3:
-            st.metric("Jobs Matched","5")
+        c1.metric("Employability","87%")
+        c2.metric("Missing Skills","4")
+        c3.metric("Jobs Matched","5")
 
     # RESUME
     elif page=="📄 Resume Analysis":
@@ -246,12 +235,13 @@ def dashboard():
 
         skills={
             "Python":92,
-            "SQL":81,
-            "Cloud":52,
-            "Docker":38
+            "SQL":80,
+            "Cloud":55,
+            "Docker":35
         }
 
         for s,v in skills.items():
+
             st.write(s)
             st.progress(v/100)
 
@@ -260,11 +250,12 @@ def dashboard():
 
         roles=[
             ("Data Analyst","92%"),
-            ("Backend Developer","88%"),
-            ("ML Engineer","79%")
+            ("ML Engineer","79%"),
+            ("Cloud Engineer","72%")
         ]
 
         for r,m in roles:
+
             st.markdown(f"""
             <div class="card">
             <h2>{r}</h2>
@@ -275,20 +266,6 @@ def dashboard():
     # AI
     elif page=="🤖 AI Assistant":
         ai_assistant()
-
-    # PROFILE
-    elif page=="⚙ Profile":
-
-        users=total_users()
-
-        st.markdown(f"""
-        <div class="card">
-        <h2>User Analytics</h2>
-        <p>Total Users: {users}</p>
-        <p>Secure Auth Enabled</p>
-        <p>Encrypted Password Storage</p>
-        </div>
-        """,unsafe_allow_html=True)
 
     if st.sidebar.button("Logout"):
         st.session_state.logged_in=False
