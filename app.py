@@ -3,80 +3,72 @@ from backend import register_user, login_user
 import random
 
 st.set_page_config(
-    page_title="Glass Cosmos AI",
+    page_title="AI Employability Platform",
     page_icon="⚡",
     layout="wide"
 )
 
-# ---------------- GLASS COSMOS CSS ----------------
+# ---------------- ADVANCED CSS ----------------
 st.markdown("""
 <style>
 
 .stApp{
-background:
-radial-gradient(circle at top left,#00eaff22,transparent 35%),
-radial-gradient(circle at bottom right,#8b5cf622,transparent 35%),
-linear-gradient(135deg,#020617,#0f172a,#111827);
+background:linear-gradient(-45deg,#020617,#0f172a,#111827,#1e293b);
+background-size:400% 400%;
+animation:bgmove 15s ease infinite;
 color:white;
-overflow:hidden;
+}
+
+@keyframes bgmove{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
 }
 
 .card{
 background:rgba(255,255,255,.08);
-backdrop-filter:blur(28px);
+backdrop-filter:blur(22px);
 padding:28px;
-border-radius:28px;
+border-radius:22px;
 border:1px solid rgba(255,255,255,.12);
-margin:15px 0;
-box-shadow:
-0 0 25px rgba(0,234,255,.15),
-0 0 45px rgba(139,92,246,.08);
+margin:12px 0;
+box-shadow:0 0 30px rgba(0,234,255,.15);
 transition:.4s;
 }
 
 .card:hover{
 transform:translateY(-8px);
-box-shadow:
-0 0 35px rgba(0,234,255,.35),
-0 0 65px rgba(139,92,246,.18);
+box-shadow:0 0 45px rgba(0,234,255,.35);
 }
 
 .hero{
-font-size:70px;
+font-size:65px;
 font-weight:900;
-background:linear-gradient(90deg,#00eaff,#8b5cf6,#ffffff);
+background:linear-gradient(90deg,#00eaff,#8b5cf6);
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
 }
 
 .stButton>button{
 width:100%;
-height:52px;
+height:50px;
 border:none;
-border-radius:18px;
+border-radius:16px;
 font-weight:bold;
 background:linear-gradient(90deg,#00eaff,#8b5cf6);
 color:white;
-box-shadow:0 0 20px #00eaff55;
-}
-
-.stButton>button:hover{
-transform:scale(1.03);
-box-shadow:0 0 35px #00eaff99;
 }
 
 .stTextInput input,
 textarea{
-background:rgba(255,255,255,.06)!important;
-color:white!important;
-border:1px solid #00eaff!important;
-border-radius:18px!important;
+background:#0f172a !important;
+color:white !important;
+border:1px solid #00eaff !important;
+border-radius:14px !important;
 }
 
 section[data-testid="stSidebar"]{
-background:rgba(15,23,42,.9);
-backdrop-filter:blur(25px);
-border-right:1px solid rgba(255,255,255,.08);
+background:#0f172a;
 }
 
 </style>
@@ -95,12 +87,9 @@ def login_page():
     with left:
         st.markdown("""
         <div style="height:90vh;display:flex;flex-direction:column;justify-content:center;">
-        <div class="hero">Glass Cosmos</div>
+        <div class="hero">AI Employability</div>
         <h3>Future Career Intelligence Platform</h3>
-        <p>
-        Analyze resumes, predict employability,
-        identify skill gaps and optimize placements.
-        </p>
+        <p>Analyze resumes, predict employability, identify skill gaps and optimize placements.</p>
         </div>
         """,unsafe_allow_html=True)
 
@@ -138,7 +127,7 @@ def login_page():
 # ---------------- AI ----------------
 def ai_assistant():
 
-    st.subheader("🤖 Glass Cosmos AI Mentor")
+    st.subheader("🤖 AI Career Mentor")
 
     q=st.text_input("Ask Question")
 
@@ -147,13 +136,13 @@ def ai_assistant():
         q=q.lower()
 
         if "data analyst" in q:
-            st.success("Learn Python • SQL • Tableau • Projects")
+            st.success("Learn Python, SQL, Tableau, Projects")
 
         elif "ml" in q:
-            st.success("Learn ML • DL • Deployment • Cloud")
+            st.success("Learn ML, DL, Deployment, Cloud")
 
         elif "cloud" in q:
-            st.success("Learn AWS • Docker • Kubernetes")
+            st.success("Learn AWS, Docker, Kubernetes")
 
         else:
             st.info("Build strong projects + certifications")
@@ -163,7 +152,7 @@ def ai_assistant():
 def dashboard():
 
     page=st.sidebar.selectbox(
-        "Cosmos Navigation",
+        "Navigation",
         [
             "🏠 Executive Dashboard",
             "📄 Resume Intelligence",
@@ -175,6 +164,7 @@ def dashboard():
         ]
     )
 
+    # HOME
     if page=="🏠 Executive Dashboard":
 
         st.markdown('<div class="hero">Dashboard</div>',
@@ -190,11 +180,11 @@ def dashboard():
         st.markdown("""
         <div class="card">
         <h2>AI Insights</h2>
-        <p>You are highly suited for backend and data roles.
-        Improve cloud + deployment skills.</p>
+        <p>You are highly suited for backend and data roles. Improve cloud + deployment skills.</p>
         </div>
         """,unsafe_allow_html=True)
 
+    # RESUME
     elif page=="📄 Resume Intelligence":
 
         st.file_uploader("Upload Resume PDF")
@@ -210,6 +200,7 @@ def dashboard():
             st.success("Strong Python profile")
             st.warning("Missing Docker / AWS")
 
+    # SKILL
     elif page=="📊 Skill Analytics":
 
         skills={
@@ -225,6 +216,7 @@ def dashboard():
             st.write(f"{s} - {v}%")
             st.progress(v/100)
 
+    # JOB
     elif page=="💼 Job Match Engine":
 
         jobs=[
@@ -242,6 +234,7 @@ def dashboard():
             </div>
             """,unsafe_allow_html=True)
 
+    # ROADMAP
     elif page=="🛣 Learning Roadmap":
 
         roadmap=[
@@ -254,9 +247,11 @@ def dashboard():
         for r in roadmap:
             st.success(r)
 
+    # AI
     elif page=="🤖 AI Assistant":
         ai_assistant()
 
+    # PROFILE
     elif page=="👤 Profile":
 
         st.markdown("""
