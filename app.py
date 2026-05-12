@@ -1,5 +1,6 @@
 import streamlit as st
 from backend import register_user, login_user
+import random
 
 # ---------------- PAGE CONFIG ----------------
 st.set_page_config(
@@ -8,10 +9,9 @@ st.set_page_config(
     layout="wide"
 )
 
-# ---------------- ANIMATED CSS ----------------
+# ---------------- CSS ----------------
 st.markdown("""
 <style>
-
 .stApp{
 background:linear-gradient(-45deg,#0f0c29,#302b63,#24243e,#ff512f);
 background-size:400% 400%;
@@ -29,13 +29,9 @@ color:white;
 background:rgba(255,255,255,0.12);
 border-radius:25px;
 backdrop-filter:blur(20px);
-padding:40px;
+padding:30px;
 box-shadow:0 8px 32px rgba(0,0,0,0.4);
-transition:0.4s;
-}
-
-.glass:hover{
-transform:translateY(-10px);
+margin:15px;
 }
 
 .stButton>button{
@@ -58,7 +54,6 @@ animation:glow 2s ease-in-out infinite alternate;
 from{text-shadow:0 0 10px #fff;}
 to{text-shadow:0 0 30px #ff00ff;}
 }
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -67,7 +62,7 @@ if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 
 
-# ---------------- LOGIN PAGE ----------------
+# ---------------- LOGIN ----------------
 def login_page():
 
     st.markdown(
@@ -78,44 +73,28 @@ def login_page():
     tab1, tab2 = st.tabs(["🔐 Login", "📝 Register"])
 
     with tab1:
-
-        st.markdown('<div class="glass">',
-                    unsafe_allow_html=True)
-
         username = st.text_input("Username")
-        password = st.text_input("Password",
-                                 type="password")
+        password = st.text_input("Password", type="password")
 
         if st.button("Login"):
-
             if login_user(username, password):
                 st.session_state.logged_in = True
-                st.success("Login Success ✅")
                 st.rerun()
             else:
-                st.error("Invalid Credentials ❌")
-
-        st.markdown('</div>',
-                    unsafe_allow_html=True)
+                st.error("Invalid Credentials")
 
     with tab2:
-
-        st.markdown('<div class="glass">',
-                    unsafe_allow_html=True)
-
         new_user = st.text_input("Create Username")
-        new_pass = st.text_input("Create Password",
-                                 type="password")
+        new_pass = st.text_input(
+            "Create Password",
+            type="password"
+        )
 
         if st.button("Register"):
-
             if register_user(new_user, new_pass):
-                st.success("Registered Successfully ✅")
+                st.success("Registered Successfully")
             else:
-                st.error("User Exists ❌")
-
-        st.markdown('</div>',
-                    unsafe_allow_html=True)
+                st.error("User Exists")
 
 
 # ---------------- DASHBOARD ----------------
@@ -126,96 +105,86 @@ def dashboard():
         unsafe_allow_html=True
     )
 
-    choice = st.radio(
-        "",
-        [
-            "📄 Resume Analysis",
-            "📊 Skill Gap",
-            "💼 Job Roles"
-        ],
-        horizontal=True
+    resume = st.file_uploader(
+        "Upload Resume PDF"
     )
 
-    st.write("")
+    jd = st.text_area(
+        "Paste Job Description"
+    )
 
-    # Resume Upload
-    if choice == "📄 Resume Analysis":
+    if st.button("Analyze Resume"):
 
-        st.markdown('<div class="glass">',
-                    unsafe_allow_html=True)
+        score = random.randint(60,95)
 
-        st.subheader("Upload Resume")
+        missing_skills = [
+            "Python",
+            "SQL",
+            "Machine Learning"
+        ]
 
-        file = st.file_uploader(
-            "Upload PDF Resume",
-            type=["pdf"]
+        improvements = [
+            "Improve problem solving",
+            "Add real-world projects",
+            "Learn cloud deployment"
+        ]
+
+        roles = [
+            "Data Analyst",
+            "ML Engineer",
+            "Backend Developer"
+        ]
+
+        # SCORE
+        st.markdown(
+            f"""
+            <div class="glass">
+            <h1>📊 Employability Score: {score}%</h1>
+            </div>
+            """,
+            unsafe_allow_html=True
         )
 
-        if file:
-            st.success("Resume Uploaded ✅")
+        col1,col2,col3=st.columns(3)
 
-        st.markdown('</div>',
-                    unsafe_allow_html=True)
+        with col1:
+            st.markdown("""
+            <div class="glass">
+            <h2>❌ Missing Skills</h2>
+            """,unsafe_allow_html=True)
 
-    # Skill Gap
-    elif choice == "📊 Skill Gap":
+            for i in missing_skills:
+                st.write("•",i)
 
-        st.markdown('<div class="glass">',
-                    unsafe_allow_html=True)
+            st.markdown("</div>",
+                        unsafe_allow_html=True)
 
-        st.subheader("Skill Gap Analysis")
+        with col2:
+            st.markdown("""
+            <div class="glass">
+            <h2>🚀 Improvements</h2>
+            """,unsafe_allow_html=True)
 
-        jd = st.text_area(
-            "Paste Job Description"
-        )
+            for i in improvements:
+                st.write("•",i)
 
-        if st.button("Analyze"):
+            st.markdown("</div>",
+                        unsafe_allow_html=True)
 
-            if jd:
-                st.success(
-                    "Analysis Complete ✅"
-                )
+        with col3:
+            st.markdown("""
+            <div class="glass">
+            <h2>💼 Suggested Roles</h2>
+            """,unsafe_allow_html=True)
 
-                st.write(
-                    "Missing Skills:"
-                )
+            for i in roles:
+                st.write("•",i)
 
-                st.write("• Python")
-                st.write("• SQL")
-                st.write("• Machine Learning")
-
-            else:
-                st.error(
-                    "Enter Job Description"
-                )
-
-        st.markdown('</div>',
-                    unsafe_allow_html=True)
-
-    # Job Roles
-    elif choice == "💼 Job Roles":
-
-        st.markdown('<div class="glass">',
-                    unsafe_allow_html=True)
-
-        st.subheader(
-            "Recommended Roles"
-        )
-
-        st.success("AI Suggested Roles")
-
-        st.write("• Data Analyst")
-        st.write("• Backend Developer")
-        st.write("• ML Engineer")
-        st.write("• Cloud Engineer")
-
-        st.markdown('</div>',
-                    unsafe_allow_html=True)
-
-    st.write("")
+            st.markdown("</div>",
+                        unsafe_allow_html=True)
 
     if st.button("Logout"):
-        st.session_state.logged_in = False
+        st.session_state.logged_in=False
         st.rerun()
 
 
