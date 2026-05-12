@@ -3,12 +3,12 @@ from backend import register_user, login_user
 import random
 
 st.set_page_config(
-    page_title="AI Employability",
+    page_title="AI Employability Platform",
     page_icon="⚡",
     layout="wide"
 )
 
-# ---------------- CSS ----------------
+# ---------------- ADVANCED CSS ----------------
 st.markdown("""
 <style>
 
@@ -27,15 +27,22 @@ color:white;
 
 .card{
 background:rgba(255,255,255,.08);
-backdrop-filter:blur(20px);
-padding:25px;
-border-radius:20px;
-margin:15px 0;
-border:1px solid rgba(255,255,255,.15);
+backdrop-filter:blur(22px);
+padding:28px;
+border-radius:22px;
+border:1px solid rgba(255,255,255,.12);
+margin:12px 0;
+box-shadow:0 0 30px rgba(0,234,255,.15);
+transition:.4s;
+}
+
+.card:hover{
+transform:translateY(-8px);
+box-shadow:0 0 45px rgba(0,234,255,.35);
 }
 
 .hero{
-font-size:70px;
+font-size:65px;
 font-weight:900;
 background:linear-gradient(90deg,#00eaff,#8b5cf6);
 -webkit-background-clip:text;
@@ -46,7 +53,7 @@ background:linear-gradient(90deg,#00eaff,#8b5cf6);
 width:100%;
 height:50px;
 border:none;
-border-radius:14px;
+border-radius:16px;
 font-weight:bold;
 background:linear-gradient(90deg,#00eaff,#8b5cf6);
 color:white;
@@ -79,21 +86,10 @@ def login_page():
 
     with left:
         st.markdown("""
-        <div style="
-        height:90vh;
-        display:flex;
-        flex-direction:column;
-        justify-content:center;">
-        <div class="hero">
-        AI Employability
-        </div>
-
-        <h3>Career Intelligence Platform</h3>
-
-        <p>
-        Resume analysis, skill gap prediction,
-        employability scoring and AI career guidance.
-        </p>
+        <div style="height:90vh;display:flex;flex-direction:column;justify-content:center;">
+        <div class="hero">AI Employability</div>
+        <h3>Future Career Intelligence Platform</h3>
+        <p>Analyze resumes, predict employability, identify skill gaps and optimize placements.</p>
         </div>
         """,unsafe_allow_html=True)
 
@@ -102,26 +98,13 @@ def login_page():
         st.markdown('<div class="card">',
                     unsafe_allow_html=True)
 
-        tab1,tab2=st.tabs([
-            "🔐 Login",
-            "✨ Register"
-        ])
+        tab1,tab2=st.tabs(["🔐 Login","✨ Register"])
 
         with tab1:
-
-            u=st.text_input(
-                "Username",
-                key="login_user"
-            )
-
-            p=st.text_input(
-                "Password",
-                type="password",
-                key="login_pass"
-            )
+            u=st.text_input("Username",key="l1")
+            p=st.text_input("Password",type="password",key="l2")
 
             if st.button("Secure Login"):
-
                 if login_user(u,p):
                     st.session_state.logged_in=True
                     st.rerun()
@@ -129,51 +112,40 @@ def login_page():
                     st.error("Invalid Login")
 
         with tab2:
-
-            u=st.text_input(
-                "Create Username",
-                key="reg_user"
-            )
-
-            p=st.text_input(
-                "Create Password",
-                type="password",
-                key="reg_pass"
-            )
+            u=st.text_input("Create Username",key="r1")
+            p=st.text_input("Create Password",type="password",key="r2")
 
             if st.button("Create Account"):
-
                 if register_user(u,p):
                     st.success("Registered")
                 else:
                     st.error("User Exists")
 
-        st.markdown("</div>",
-                    unsafe_allow_html=True)
+        st.markdown("</div>",unsafe_allow_html=True)
 
 
 # ---------------- AI ----------------
 def ai_assistant():
 
-    st.subheader("🤖 Career AI Assistant")
+    st.subheader("🤖 AI Career Mentor")
 
-    q=st.text_input("Ask Career Question")
+    q=st.text_input("Ask Question")
 
     if st.button("Ask AI"):
 
         q=q.lower()
 
         if "data analyst" in q:
-            st.success("Learn Python, SQL, Power BI")
+            st.success("Learn Python, SQL, Tableau, Projects")
 
         elif "ml" in q:
-            st.success("Learn ML, Deep Learning, Deployment")
+            st.success("Learn ML, DL, Deployment, Cloud")
 
         elif "cloud" in q:
             st.success("Learn AWS, Docker, Kubernetes")
 
         else:
-            st.info("Build projects and improve skills")
+            st.info("Build strong projects + certifications")
 
 
 # ---------------- DASHBOARD ----------------
@@ -182,75 +154,114 @@ def dashboard():
     page=st.sidebar.selectbox(
         "Navigation",
         [
-            "🏠 Home",
-            "📄 Resume Analysis",
-            "📊 Skill Gap",
-            "💼 Job Roles",
-            "🤖 AI Assistant"
+            "🏠 Executive Dashboard",
+            "📄 Resume Intelligence",
+            "📊 Skill Analytics",
+            "💼 Job Match Engine",
+            "🛣 Learning Roadmap",
+            "🤖 AI Assistant",
+            "👤 Profile"
         ]
     )
 
     # HOME
-    if page=="🏠 Home":
+    if page=="🏠 Executive Dashboard":
 
-        c1,c2,c3=st.columns(3)
+        st.markdown('<div class="hero">Dashboard</div>',
+                    unsafe_allow_html=True)
 
-        c1.metric("Employability","87%")
-        c2.metric("Missing Skills","4")
-        c3.metric("Job Matches","5")
+        c1,c2,c3,c4=st.columns(4)
+
+        c1.metric("Employability","87%","+5%")
+        c2.metric("Missing Skills","4","-2")
+        c3.metric("Jobs Matched","12","+4")
+        c4.metric("Placement Chance","82%","+8%")
+
+        st.markdown("""
+        <div class="card">
+        <h2>AI Insights</h2>
+        <p>You are highly suited for backend and data roles. Improve cloud + deployment skills.</p>
+        </div>
+        """,unsafe_allow_html=True)
 
     # RESUME
-    elif page=="📄 Resume Analysis":
+    elif page=="📄 Resume Intelligence":
 
-        st.file_uploader("Upload Resume")
+        st.file_uploader("Upload Resume PDF")
         st.text_area("Paste Job Description")
 
         if st.button("Analyze Resume"):
 
-            score=random.randint(65,95)
+            score=random.randint(70,95)
 
-            st.metric(
-                "Employability Score",
-                f"{score}%"
-            )
-
+            st.metric("Resume Match Score",f"{score}%")
             st.progress(score/100)
 
-    # SKILL GAP
-    elif page=="📊 Skill Gap":
+            st.success("Strong Python profile")
+            st.warning("Missing Docker / AWS")
+
+    # SKILL
+    elif page=="📊 Skill Analytics":
 
         skills={
             "Python":92,
-            "SQL":81,
+            "SQL":85,
+            "Machine Learning":74,
             "Cloud":55,
-            "Docker":38
+            "Docker":41,
+            "System Design":35
         }
 
         for s,v in skills.items():
-            st.write(s)
+            st.write(f"{s} - {v}%")
             st.progress(v/100)
 
-    # JOB ROLES
-    elif page=="💼 Job Roles":
+    # JOB
+    elif page=="💼 Job Match Engine":
 
-        roles=[
-            ("Data Analyst","92%"),
-            ("ML Engineer","80%"),
-            ("Cloud Engineer","72%")
+        jobs=[
+            ("Data Analyst",92),
+            ("Backend Developer",88),
+            ("ML Engineer",79),
+            ("Cloud Engineer",72)
         ]
 
-        for r,m in roles:
-
+        for role,score in jobs:
             st.markdown(f"""
             <div class="card">
-            <h2>{r}</h2>
-            <h1>{m}</h1>
+            <h2>{role}</h2>
+            <h1>{score}% Match</h1>
             </div>
             """,unsafe_allow_html=True)
+
+    # ROADMAP
+    elif page=="🛣 Learning Roadmap":
+
+        roadmap=[
+            "Week 1-2 → SQL Mastery",
+            "Week 3-4 → Docker",
+            "Week 5-6 → AWS",
+            "Week 7-8 → Deployment"
+        ]
+
+        for r in roadmap:
+            st.success(r)
 
     # AI
     elif page=="🤖 AI Assistant":
         ai_assistant()
+
+    # PROFILE
+    elif page=="👤 Profile":
+
+        st.markdown("""
+        <div class="card">
+        <h2>User Profile Analytics</h2>
+        <p>Status: Active</p>
+        <p>Resume Score Trend: Rising</p>
+        <p>Learning Consistency: Strong</p>
+        </div>
+        """,unsafe_allow_html=True)
 
     if st.sidebar.button("Logout"):
         st.session_state.logged_in=False
