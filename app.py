@@ -1,54 +1,43 @@
 import streamlit as st
-import os
-
+import re
 from backend import register_user, login_user
-from resume_parser import extract_text_from_resume
-from skill_extraction.skill_extractor import extract_skills
-from skill_gap_analysis import analyze_skill_gap
-from employability_score import calculate_employability_score
-from job_role_suggester import suggest_job_role
-from resume_improvement import improvement_suggestions
 
 
 # ---------------- PAGE CONFIG ----------------
 st.set_page_config(
-    page_title="Employability Assessment",
+    page_title="AI Employability Platform",
     page_icon="🚀",
-    layout="wide"
+    layout="centered"
 )
 
 
-# ---------------- COLORFUL THEME ----------------
+# ---------------- STYLING ----------------
 st.markdown("""
 <style>
 .stApp {
-    background: linear-gradient(135deg, #6a11cb, #2575fc);
-    color: white;
+    background: linear-gradient(135deg,#141E30,#243B55);
+    color:white;
 }
 
-.login-box {
-    background: rgba(255,255,255,0.15);
-    padding: 40px;
-    border-radius: 20px;
-    box-shadow: 0px 8px 32px rgba(0,0,0,0.3);
-    backdrop-filter: blur(10px);
-    text-align: center;
+.main-box{
+    background: rgba(255,255,255,0.12);
+    padding:40px;
+    border-radius:20px;
+    backdrop-filter: blur(20px);
+    box-shadow:0px 8px 32px rgba(0,0,0,0.35);
 }
 
-.stButton>button {
-    background: linear-gradient(90deg,#ff512f,#dd2476);
-    color: white;
-    border-radius: 12px;
-    font-size: 18px;
-    font-weight: bold;
-    width: 100%;
-    padding: 12px;
-    border: none;
+.stButton>button{
+    width:100%;
+    border-radius:15px;
+    background:linear-gradient(90deg,#ff512f,#dd2476);
+    color:white;
+    font-size:17px;
+    font-weight:bold;
 }
 
-.stTextInput>div>div>input {
-    border-radius: 10px;
-    padding: 12px;
+h1{
+    text-align:center;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -59,150 +48,131 @@ if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 
 
-# ---------------- COURSE RECOMMENDER ----------------
-def recommend_courses(missing_skills):
-    course_map = {
-        "python": "Python Programming - Coursera",
-        "machine learning": "Machine Learning by Andrew Ng",
-        "sql": "SQL for Data Science",
-        "aws": "AWS Cloud Practitioner",
-        "flask": "Flask Web Development Course",
-        "data science": "IBM Data Science Certificate"
-    }
+# ---------------- VALIDATION ----------------
+def valid_email(email):
+    pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
+    return re.match(pattern, email)
 
-    return {
-        skill: course_map.get(
-            skill.lower(),
-            "Search online learning resources"
+
+def password_strength(password):
+    score = 0
+
+    if len(password) >= 8:
+        score += 1
+    if re.search(r"[A-Z]", password):
+        score += 1
+    if re.search(r"[0-9]", password):
+        score += 1
+    if re.search(r"[!@#$%^&*]", password):
+        score += 1
+
+    return score
+
+
+# ---------------- LOGIN PAGE ----------------
+def login_page():
+
+    st.markdown("<h1>🚀 AI Employability Platform</h1>",
+                unsafe_allow_html=True)
+
+    tab1, tab2 = st.tabs(["🔐 Login", "📝 Register"])
+
+    with tab1:
+
+        st.markdown('<div class="main-box">',
+                    unsafe_allow_html=True)
+
+        username = st.text_input("Username")
+        password = st.text_input(
+            "Password",
+            type="password"
         )
-        for skill in missing_skills
-    }
 
+        if st.button("Login"):
 
-# ---------------- LOGIN / REGISTER ----------------
-def login():
+            if login_user(username, password):
+                st.session_state.logged_in = True
+                st.success("Login successful ✅")
+                st.rerun()
+            else:
+                st.error("Invalid credentials ❌")
 
-    st.markdown(
-        "<h1 style='text-align:center;'>🚀 Skill-Gap Assessment Platform</h1>",
-        unsafe_allow_html=True
-    )
+        st.markdown('</div>',
+                    unsafe_allow_html=True)
 
-    menu = ["Login", "Register"]
-    choice = st.sidebar.selectbox("Menu", menu)
+    with tab2:
 
-    col1, col2, col3 = st.columns([1, 2, 1])
+        st.markdown('<div class="main-box">',
+                    unsafe_allow_html=True)
 
-    with col2:
+        email = st.text_input("Email")
+        new_user = st.text_input("Create Username")
+        new_pass = st.text_input(
+            "Create Password",
+            type="password"
+        )
 
-        st.markdown('<div class="login-box">', unsafe_allow_html=True)
+        strength = password_strength(new_pass)
 
-        if choice == "Login":
+        st.progress(strength / 4)
 
-            st.subheader("🔐 Login")
+        if strength == 1:
+            st.warning("Weak password")
+        elif strength == 2:
+            st.info("Medium password")
+        elif strength >= 3:
+            st.success("Strong password")
 
-            username = st.text_input("Username")
-            password = st.text_input("Password", type="password")
+        if st.button("Register"):
 
-            if st.button("Login"):
+            if not valid_email(email):
+                st.error("Invalid email")
 
-                if login_user(username, password):
-                    st.session_state.logged_in = True
-                    st.success("Login Successful ✅")
-                    st.rerun()
+            elif strength < 3:
+                st.error(
+                    "Password must contain:\n"
+                    "- 8 chars\n"
+                    "- Uppercase\n"
+                    "- Number\n"
+                    "- Special symbol"
+                )
+
+            else:
+
+                if register_user(
+                    new_user,
+                    new_pass
+                ):
+                    st.success(
+                        "Registration Successful ✅"
+                    )
                 else:
-                    st.error("Invalid Credentials ❌")
+                    st.error(
+                        "Username already exists ❌"
+                    )
 
-        elif choice == "Register":
-
-            st.subheader("📝 Register")
-
-            new_user = st.text_input("New Username")
-            new_pass = st.text_input("New Password", type="password")
-
-            if st.button("Register"):
-
-                if register_user(new_user, new_pass):
-                    st.success("Registered Successfully ✅")
-                else:
-                    st.error("Username already exists ❌")
-
-        st.markdown("</div>", unsafe_allow_html=True)
+        st.markdown('</div>',
+                    unsafe_allow_html=True)
 
 
-# ---------------- MAIN APP ----------------
-def main_app():
+# ---------------- DASHBOARD ----------------
+def dashboard():
 
-    st.title("🎯 Skill-Gap Aware Employability Assessment")
+    st.title("🎯 Dashboard")
+
+    st.success("Welcome to AI Employability Platform")
 
     if st.button("Logout"):
         st.session_state.logged_in = False
         st.rerun()
 
-    resume_file = st.file_uploader("Upload Resume PDF")
-
-    job_desc = st.text_area("Paste Job Description")
-
-    if st.button("Analyze"):
-
-        if resume_file and job_desc:
-
-            with open(resume_file.name, "wb") as f:
-                f.write(resume_file.getbuffer())
-
-            resume_text = extract_text_from_resume(
-                resume_file.name
-            )
-
-            resume_skills = extract_skills(
-                resume_text
-            )
-
-            job_skills = extract_skills(
-                job_desc
-            )
-
-            matched, missing = analyze_skill_gap(
-                resume_skills,
-                job_skills
-            )
-
-            score = calculate_employability_score(
-                matched,
-                job_skills
-            )
-
-            recommendations = recommend_courses(
-                missing
-            )
-
-            job_role = suggest_job_role(
-                resume_skills
-            )
-
-            improvements = improvement_suggestions(
-                missing
-            )
-
-            st.success(
-                f"📊 Employability Score: {score}%"
-            )
-
-            st.write("✅ Matched Skills:", matched)
-            st.write("❌ Missing Skills:", missing)
-            st.write("💼 Recommended Role:", job_role)
-            st.write("📚 Course Recommendations:",
-                     recommendations)
-            st.write("📝 Resume Improvements:",
-                     improvements)
-
-        else:
-            st.error(
-                "Upload resume and enter job description"
-            )
+    st.info(
+        "Now integrate your resume analyzer here."
+    )
 
 
 # ---------------- RUN ----------------
 if st.session_state.logged_in:
-    main_app()
+    dashboard()
 else:
-    login()
+    login_page()
