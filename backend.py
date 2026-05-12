@@ -4,12 +4,14 @@ import hashlib
 DB = "users.db"
 
 
-def connect():
-    return sqlite3.connect(DB)
+def hash_password(password):
+    return hashlib.sha256(
+        password.encode()
+    ).hexdigest()
 
 
-def init_db():
-    conn = connect()
+def create_db():
+    conn = sqlite3.connect(DB)
     cur = conn.cursor()
 
     cur.execute("""
@@ -23,24 +25,21 @@ def init_db():
     conn.close()
 
 
-init_db()
-
-
-def hash_pass(password):
-    return hashlib.sha256(
-        password.encode()
-    ).hexdigest()
+create_db()
 
 
 def register_user(username,password):
 
-    conn=connect()
-    cur=conn.cursor()
+    conn = sqlite3.connect(DB)
+    cur = conn.cursor()
 
     try:
         cur.execute(
             "INSERT INTO users VALUES (?,?)",
-            (username,hash_pass(password))
+            (
+                username,
+                hash_password(password)
+            )
         )
 
         conn.commit()
@@ -54,18 +53,24 @@ def register_user(username,password):
 
 def login_user(username,password):
 
-    conn=connect()
-    cur=conn.cursor()
+    conn = sqlite3.connect(DB)
+    cur = conn.cursor()
 
     cur.execute("""
     SELECT *
     FROM users
     WHERE username=?
     AND password=?
-    """,(username,hash_pass(password)))
+    """,(
+        username,
+        hash_password(password)
+    ))
 
-    user=cur.fetchone()
+    user = cur.fetchone()
 
     conn.close()
 
-    return user is not None
+    if user:
+        return True
+
+    return False
