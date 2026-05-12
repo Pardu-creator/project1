@@ -1,8 +1,9 @@
 import streamlit as st
 from backend import register_user, login_user
 import random
+import pandas as pd
 
-# ---------------- PAGE CONFIG ----------------
+# ---------------- CONFIG ----------------
 st.set_page_config(
     page_title="AI Employability Platform",
     page_icon="🚀",
@@ -13,13 +14,13 @@ st.set_page_config(
 st.markdown("""
 <style>
 .stApp{
-background:linear-gradient(-45deg,#0f0c29,#302b63,#24243e,#ff512f);
+background:linear-gradient(-45deg,#141e30,#243b55,#302b63,#ff512f);
 background-size:400% 400%;
-animation:gradient 15s ease infinite;
+animation:bg 15s ease infinite;
 color:white;
 }
 
-@keyframes gradient{
+@keyframes bg{
 0%{background-position:0% 50%;}
 50%{background-position:100% 50%;}
 100%{background-position:0% 50%;}
@@ -30,8 +31,20 @@ background:rgba(255,255,255,0.12);
 border-radius:25px;
 backdrop-filter:blur(20px);
 padding:30px;
-box-shadow:0 8px 32px rgba(0,0,0,0.4);
+box-shadow:0 8px 32px rgba(0,0,0,0.35);
 margin:15px;
+}
+
+.glow{
+text-align:center;
+font-size:48px;
+font-weight:bold;
+animation:glow 2s infinite alternate;
+}
+
+@keyframes glow{
+from{text-shadow:0 0 10px white;}
+to{text-shadow:0 0 30px #ff00ff;}
 }
 
 .stButton>button{
@@ -42,24 +55,12 @@ border:none;
 border-radius:15px;
 font-size:18px;
 }
-
-.glow{
-text-align:center;
-font-size:50px;
-font-weight:bold;
-animation:glow 2s ease-in-out infinite alternate;
-}
-
-@keyframes glow{
-from{text-shadow:0 0 10px #fff;}
-to{text-shadow:0 0 30px #ff00ff;}
-}
 </style>
 """, unsafe_allow_html=True)
 
 # ---------------- SESSION ----------------
 if "logged_in" not in st.session_state:
-    st.session_state.logged_in = False
+    st.session_state.logged_in=False
 
 
 # ---------------- LOGIN ----------------
@@ -70,29 +71,26 @@ def login_page():
         unsafe_allow_html=True
     )
 
-    tab1, tab2 = st.tabs(["🔐 Login", "📝 Register"])
+    tab1,tab2=st.tabs(["Login","Register"])
 
     with tab1:
-        username = st.text_input("Username")
-        password = st.text_input("Password", type="password")
+        u=st.text_input("Username")
+        p=st.text_input("Password",type="password")
 
         if st.button("Login"):
-            if login_user(username, password):
-                st.session_state.logged_in = True
+            if login_user(u,p):
+                st.session_state.logged_in=True
                 st.rerun()
             else:
-                st.error("Invalid Credentials")
+                st.error("Invalid Login")
 
     with tab2:
-        new_user = st.text_input("Create Username")
-        new_pass = st.text_input(
-            "Create Password",
-            type="password"
-        )
+        nu=st.text_input("New Username")
+        np=st.text_input("New Password",type="password")
 
         if st.button("Register"):
-            if register_user(new_user, new_pass):
-                st.success("Registered Successfully")
+            if register_user(nu,np):
+                st.success("Registered")
             else:
                 st.error("User Exists")
 
@@ -101,87 +99,94 @@ def login_page():
 def dashboard():
 
     st.markdown(
-        '<div class="glow">🎯 Dashboard</div>',
+        '<div class="glow">🎯 AI Employability Dashboard</div>',
         unsafe_allow_html=True
     )
 
-    resume = st.file_uploader(
-        "Upload Resume PDF"
-    )
+    col1,col2=st.columns([2,2])
 
-    jd = st.text_area(
-        "Paste Job Description"
-    )
+    with col1:
+        resume=st.file_uploader(
+            "Upload Resume PDF"
+        )
+
+    with col2:
+        jd=st.text_area(
+            "Paste Job Description"
+        )
 
     if st.button("Analyze Resume"):
 
-        score = random.randint(60,95)
+        score=random.randint(65,95)
 
-        missing_skills = [
-            "Python",
-            "SQL",
-            "Machine Learning"
-        ]
-
-        improvements = [
-            "Improve problem solving",
-            "Add real-world projects",
-            "Learn cloud deployment"
-        ]
-
-        roles = [
-            "Data Analyst",
-            "ML Engineer",
-            "Backend Developer"
-        ]
-
-        # SCORE
-        st.markdown(
-            f"""
-            <div class="glass">
-            <h1>📊 Employability Score: {score}%</h1>
-            </div>
-            """,
-            unsafe_allow_html=True
+        st.metric(
+            "Employability Score",
+            f"{score}%"
         )
 
-        col1,col2,col3=st.columns(3)
+        st.progress(score/100)
 
-        with col1:
-            st.markdown("""
-            <div class="glass">
-            <h2>❌ Missing Skills</h2>
-            """,unsafe_allow_html=True)
+        st.write("")
 
-            for i in missing_skills:
-                st.write("•",i)
+        # Skill proficiency
+        st.subheader("📊 Skill Proficiency")
 
-            st.markdown("</div>",
-                        unsafe_allow_html=True)
+        skills={
+            "Python":90,
+            "SQL":75,
+            "Machine Learning":60,
+            "Communication":80,
+            "Cloud":55
+        }
 
-        with col2:
-            st.markdown("""
-            <div class="glass">
-            <h2>🚀 Improvements</h2>
-            """,unsafe_allow_html=True)
+        for skill,val in skills.items():
+            st.write(skill)
+            st.progress(val/100)
 
-            for i in improvements:
-                st.write("•",i)
+        # Missing skills chart
+        st.subheader("❌ Missing Skills")
 
-            st.markdown("</div>",
-                        unsafe_allow_html=True)
+        missing=pd.DataFrame({
+            "Skill":[
+                "AWS",
+                "Docker",
+                "Deep Learning",
+                "System Design"
+            ],
+            "Priority":[90,75,80,65]
+        })
 
-        with col3:
-            st.markdown("""
-            <div class="glass">
-            <h2>💼 Suggested Roles</h2>
-            """,unsafe_allow_html=True)
+        st.bar_chart(
+            missing.set_index("Skill")
+        )
 
-            for i in roles:
-                st.write("•",i)
+        # Improvement roadmap
+        st.subheader("🚀 Improvement Roadmap")
 
-            st.markdown("</div>",
-                        unsafe_allow_html=True)
+        roadmap=[
+            "Learn Docker Deployment",
+            "Build 2 Real-world Projects",
+            "Practice SQL Queries",
+            "Master AWS Basics"
+        ]
+
+        for i in roadmap:
+            st.success(i)
+
+        # Job Roles
+        st.subheader("💼 Recommended Roles")
+
+        roles=[
+            "Data Analyst",
+            "Backend Developer",
+            "ML Engineer",
+            "Cloud Associate"
+        ]
+
+        cols=st.columns(4)
+
+        for c,r in zip(cols,roles):
+            c.info(r)
 
     if st.button("Logout"):
         st.session_state.logged_in=False
