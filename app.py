@@ -1,73 +1,66 @@
 import streamlit as st
 from backend import register_user, login_user
 import random
-import pandas as pd
 
-# ---------------- CONFIG ----------------
+# ---------------- PAGE CONFIG ----------------
 st.set_page_config(
-    page_title="AI Employability",
+    page_title="AI Employability Platform",
     page_icon="⚡",
     layout="wide"
 )
 
-# ---------------- NEW DESIGN ----------------
+# ---------------- CSS ----------------
 st.markdown("""
 <style>
-
 .stApp{
-background:#0b0f19;
-color:white;
+    background:#0b0f19;
+    color:white;
 }
 
-/* Sidebar */
 section[data-testid="stSidebar"]{
-background:#111827;
-border-right:2px solid #00f7ff;
+    background:#111827;
+    border-right:2px solid #00f7ff;
 }
 
-/* Cards */
 .card{
-background:#111827;
-padding:25px;
-border-radius:18px;
-border:1px solid #00f7ff55;
-box-shadow:0 0 20px #00f7ff22;
-transition:0.4s;
+    background:#111827;
+    padding:25px;
+    border-radius:18px;
+    border:1px solid #00f7ff55;
+    box-shadow:0 0 20px #00f7ff22;
+    transition:0.4s;
+    margin:15px 0;
 }
 
 .card:hover{
-transform:translateY(-8px);
-box-shadow:0 0 35px #00f7ff88;
+    transform:translateY(-8px);
+    box-shadow:0 0 35px #00f7ff88;
 }
 
-/* Title */
 .title{
-font-size:42px;
-font-weight:800;
-color:#00f7ff;
-text-align:center;
-margin-bottom:30px;
+    font-size:42px;
+    font-weight:800;
+    color:#00f7ff;
+    text-align:center;
+    margin-bottom:30px;
 }
 
-/* Buttons */
 .stButton>button{
-background:#00f7ff;
-color:black;
-font-weight:bold;
-border:none;
-border-radius:12px;
-width:100%;
+    background:#00f7ff;
+    color:black;
+    font-weight:bold;
+    border:none;
+    border-radius:12px;
+    width:100%;
 }
 
-/* Inputs */
 .stTextInput input,
 textarea{
-background:#1f2937 !important;
-color:white !important;
-border-radius:12px !important;
-border:1px solid #00f7ff !important;
+    background:#1f2937 !important;
+    color:white !important;
+    border-radius:12px !important;
+    border:1px solid #00f7ff !important;
 }
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -86,7 +79,7 @@ def login_page():
 
     menu = st.sidebar.radio(
         "Menu",
-        ["Login","Register"]
+        ["Login", "Register"]
     )
 
     if menu == "Login":
@@ -98,11 +91,11 @@ def login_page():
         )
 
         if st.button("Login"):
-            if login_user(u,p):
-                st.session_state.logged_in=True
+            if login_user(u, p):
+                st.session_state.logged_in = True
                 st.rerun()
             else:
-                st.error("Invalid login")
+                st.error("Invalid Login")
 
     else:
 
@@ -113,7 +106,7 @@ def login_page():
         )
 
         if st.button("Register"):
-            if register_user(u,p):
+            if register_user(u, p):
                 st.success("Registered Successfully")
             else:
                 st.error("User Exists")
@@ -136,22 +129,17 @@ def dashboard():
         ]
     )
 
-    # Resume
+    # ---------------- RESUME ----------------
     if page == "Resume Analysis":
 
-        st.markdown('<div class="card">',unsafe_allow_html=True)
+        st.markdown('<div class="card">', unsafe_allow_html=True)
 
-        st.file_uploader(
-            "Upload Resume PDF"
-        )
-
-        st.text_area(
-            "Paste Job Description"
-        )
+        st.file_uploader("Upload Resume PDF")
+        st.text_area("Paste Job Description")
 
         if st.button("Analyze Resume"):
 
-            score=random.randint(65,95)
+            score = random.randint(65,95)
 
             st.metric(
                 "Employability Score",
@@ -160,46 +148,91 @@ def dashboard():
 
             st.progress(score/100)
 
-        st.markdown('</div>',unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
-    # Skill Gap
-    elif page=="Skill Gap":
+    # ---------------- SKILL GAP ----------------
+    elif page == "Skill Gap":
 
-        st.markdown('<div class="card">',unsafe_allow_html=True)
+        st.subheader("📊 Skill Gap Heatmap")
 
-        skills={
+        col1,col2 = st.columns(2)
+
+        skills = {
             "Python":85,
-            "SQL":72,
+            "SQL":70,
             "Machine Learning":55,
-            "Cloud":45
+            "Cloud":45,
+            "Docker":35,
+            "System Design":25
         }
 
-        for k,v in skills.items():
-            st.write(k)
-            st.progress(v/100)
+        with col1:
+            for skill,val in list(skills.items())[:3]:
+                st.markdown(
+                    f"""
+                    <div class="card">
+                    <h3>{skill}</h3>
+                    <h2>{val}%</h2>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
 
-        st.markdown('</div>',unsafe_allow_html=True)
+        with col2:
+            for skill,val in list(skills.items())[3:]:
+                st.markdown(
+                    f"""
+                    <div class="card">
+                    <h3>{skill}</h3>
+                    <h2>{val}%</h2>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
 
-    # Job Roles
-    else:
+        st.write("### 🚀 Recommended Improvements")
 
-        roles=pd.DataFrame({
-            "Roles":[
-                "Data Analyst",
-                "ML Engineer",
-                "Cloud Associate",
-                "Backend Developer"
-            ]
-        })
+        improve = [
+            "Complete AWS Certification",
+            "Build Dockerized Projects",
+            "Practice SQL Joins",
+            "Master API Development"
+        ]
 
-        st.markdown('<div class="card">',unsafe_allow_html=True)
+        for i in improve:
+            st.success(i)
 
-        st.table(roles)
+    # ---------------- JOB ROLES ----------------
+    elif page == "Job Roles":
 
-        st.markdown('</div>',unsafe_allow_html=True)
+        st.subheader("💼 AI Recommended Roles")
+
+        roles = [
+            {"role":"Data Analyst","match":"92%"},
+            {"role":"Backend Developer","match":"88%"},
+            {"role":"ML Engineer","match":"79%"},
+            {"role":"Cloud Associate","match":"72%"}
+        ]
+
+        cols = st.columns(2)
+
+        for idx,r in enumerate(roles):
+
+            with cols[idx % 2]:
+
+                st.markdown(
+                    f"""
+                    <div class="card">
+                    <h2>{r['role']}</h2>
+                    <h1>{r['match']}</h1>
+                    <p>Role Match Accuracy</p>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
 
     if st.sidebar.button("Logout"):
-        st.session_state.logged_in=False
+        st.session_state.logged_in = False
         st.rerun()
 
 
