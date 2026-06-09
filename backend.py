@@ -1,76 +1,53 @@
-import sqlite3
+import json
+import os
 import hashlib
 
-DB = "users.db"
+USER_FILE = "users.json"
+
+
+def load_users():
+    if not os.path.exists(USER_FILE):
+        return {}
+
+    with open(USER_FILE, "r") as file:
+        return json.load(file)
+
+
+def save_users(users):
+    with open(USER_FILE, "w") as file:
+        json.dump(users, file, indent=4)
 
 
 def hash_password(password):
-    return hashlib.sha256(
-        password.encode()
-    ).hexdigest()
+    return hashlib.sha256(password.encode()).hexdigest()
 
 
-def create_db():
-    conn = sqlite3.connect(DB)
-    cur = conn.cursor()
+def register_user(username, password):
+    username = username.strip()
 
-    cur.execute("""
-    CREATE TABLE IF NOT EXISTS users(
-        username TEXT PRIMARY KEY,
-        password TEXT
-    )
-    """)
-
-    conn.commit()
-    conn.close()
-
-
-create_db()
-
-
-def register_user(username,password):
-
-    conn = sqlite3.connect(DB)
-    cur = conn.cursor()
-
-    try:
-        cur.execute(
-            "INSERT INTO users VALUES (?,?)",
-            (
-                username,
-                hash_password(password)
-            )
-        )
-
-        conn.commit()
-        conn.close()
-        return True
-
-    except:
-        conn.close()
+    if username == "" or password == "":
         return False
 
+    users = load_users()
 
-def login_user(username,password):
+    if username in users:
+        return False
 
-    conn = sqlite3.connect(DB)
-    cur = conn.cursor()
+    users[username] = hash_password(password)
+    save_users(users)
 
-    cur.execute("""
-    SELECT *
-    FROM users
-    WHERE username=?
-    AND password=?
-    """,(
-        username,
-        hash_password(password)
-    ))
+    return True
 
-    user = cur.fetchone()
 
-    conn.close()
+def login_user(username, password):
+    username = username.strip()
 
-    if user:
-        return True
+    if username == "" or password == "":
+        return False
 
-    return False
+    users = load_users()
+
+    if username not in users:
+        return False
+
+    return users[username] == hash_password(password)
