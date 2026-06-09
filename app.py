@@ -3,6 +3,7 @@ from backend import register_user, login_user, analyze_resume, ai_mentor_respons
 import random
 import time
 
+
 # ---------------------------------------------------
 # PAGE CONFIG
 # ---------------------------------------------------
@@ -13,11 +14,13 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+
 # ---------------------------------------------------
-# CSS
+# GLOBAL CSS
 # ---------------------------------------------------
 st.markdown("""
 <style>
+
 /* ================= MAIN APP ================= */
 .stApp{
     background:
@@ -31,7 +34,7 @@ st.markdown("""
 footer {visibility:hidden;}
 header {visibility:hidden;}
 
-/* ================= TITLES ================= */
+/* ================= TEXT ================= */
 .hero-title{
     font-size:60px;
     font-weight:900;
@@ -56,7 +59,7 @@ header {visibility:hidden;}
     line-height:1.7;
 }
 
-/* ================= GLASS CARDS ================= */
+/* ================= CARDS ================= */
 .glass-card{
     background:rgba(255,255,255,0.075);
     backdrop-filter:blur(24px);
@@ -80,14 +83,6 @@ header {visibility:hidden;}
     border-radius:24px;
     padding:22px;
     margin:12px 0;
-}
-
-.metric-box{
-    background:rgba(255,255,255,0.07);
-    border:1px solid rgba(255,255,255,0.10);
-    padding:18px;
-    border-radius:22px;
-    box-shadow:0 0 18px rgba(34,211,238,0.10);
 }
 
 .small-info{
@@ -129,6 +124,12 @@ header {visibility:hidden;}
     color:white!important;
     border:1px solid rgba(34,211,238,0.85)!important;
     border-radius:16px!important;
+}
+
+.stTextInput input:focus,
+.stTextArea textarea:focus{
+    border:1px solid #8b5cf6!important;
+    box-shadow:0 0 16px rgba(139,92,246,0.35)!important;
 }
 
 [data-testid="stFileUploader"]{
@@ -211,7 +212,90 @@ section[data-testid="stSidebar"] *{
     font-weight:700;
 }
 
-/* ================= CHAT ================= */
+/* ================= LOGIN PAGE ================= */
+.login-wrapper{
+    min-height:92vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.login-container{
+    width:100%;
+    max-width:1180px;
+    display:grid;
+    grid-template-columns:1.1fr 0.9fr;
+    gap:48px;
+    align-items:center;
+}
+
+.brand-card{
+    background:rgba(255,255,255,0.065);
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:34px;
+    padding:44px;
+    box-shadow:0 0 40px rgba(34,211,238,0.12);
+}
+
+.login-card{
+    background:rgba(255,255,255,0.085);
+    backdrop-filter:blur(28px);
+    -webkit-backdrop-filter:blur(28px);
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:34px;
+    padding:38px;
+    box-shadow:0 0 45px rgba(139,92,246,0.18);
+}
+
+.login-title{
+    font-size:40px;
+    font-weight:900;
+    text-align:center;
+    margin-bottom:8px;
+    background:linear-gradient(90deg,#22d3ee,#60a5fa,#8b5cf6);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+.login-subtitle{
+    text-align:center;
+    color:#cbd5e1;
+    margin-bottom:28px;
+    font-size:16px;
+}
+
+.feature-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin-top:28px;
+}
+
+.feature-box{
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.10);
+    border-radius:20px;
+    padding:18px;
+    color:#e5e7eb;
+    font-weight:700;
+}
+
+.brand-description{
+    color:#cbd5e1;
+    font-size:18px;
+    line-height:1.7;
+    margin-top:22px;
+}
+
+.stTabs [data-baseweb="tab-list"]{
+    justify-content:center;
+}
+
+.stTabs [data-baseweb="tab"]{
+    font-weight:800;
+    padding:12px 20px;
+}
+
 .chat-header{
     background:linear-gradient(135deg, rgba(34,211,238,0.12), rgba(139,92,246,0.12));
     border:1px solid rgba(255,255,255,0.10);
@@ -219,6 +303,22 @@ section[data-testid="stSidebar"] *{
     padding:22px;
     margin-bottom:12px;
 }
+
+@media(max-width:900px){
+    .login-container{
+        grid-template-columns:1fr;
+    }
+
+    .hero-title{
+        font-size:42px;
+        text-align:center;
+    }
+
+    .brand-description{
+        text-align:center;
+    }
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -248,6 +348,7 @@ init_session()
 # ---------------------------------------------------
 def page_heading(title, subtitle=""):
     st.markdown(f'<div class="page-title">{title}</div>', unsafe_allow_html=True)
+
     if subtitle:
         st.markdown(f'<p class="subtext">{subtitle}</p>', unsafe_allow_html=True)
 
@@ -255,8 +356,10 @@ def page_heading(title, subtitle=""):
 def pills(items, pill_type="skill-pill"):
     if items:
         html = ""
+
         for item in items:
             html += f'<span class="{pill_type}">{item}</span>'
+
         st.markdown(html, unsafe_allow_html=True)
     else:
         st.info("No data available")
@@ -277,38 +380,57 @@ def score_label(score):
 # LOGIN PAGE
 # ---------------------------------------------------
 def login_page():
-    left, right = st.columns([1.55, 1], gap="large")
+    st.markdown("""
+    <div class="login-wrapper">
+        <div class="login-container">
 
-    with left:
-        st.markdown("""
-        <div style="height:92vh;display:flex;flex-direction:column;justify-content:center;">
-            <div class="hero-title">Skill-Gap Aware Employability</div>
-            <h2 style="color:white;margin-top:18px;">Assessment Platform Using Artificial Intelligence</h2>
-            <p class="subtext">
-                A smart AI platform to analyze resumes, find missing skills,
-                suggest job roles, predict employability, and provide ChatGPT-style career mentoring.
-            </p>
+            <div class="brand-card">
+                <div class="hero-title">
+                    Skill-Gap Aware Employability
+                </div>
 
-            <div class="glass-card">
-                <div class="icon-badge">⚡</div>
-                <h3>Platform Capabilities</h3>
-                <p>✅ Resume Intelligence</p>
-                <p>✅ Skill-Gap Detection</p>
-                <p>✅ Employability Score</p>
-                <p>✅ Job Match Engine</p>
-                <p>✅ AI Mentor Chatbot</p>
+                <h2 style="color:white;margin-top:22px;">
+                    AI Powered Career Assessment Platform
+                </h2>
+
+                <p class="brand-description">
+                    Analyze resumes, identify missing skills, calculate employability score,
+                    suggest job roles, and get AI-powered career guidance through an intelligent mentor.
+                </p>
+
+                <div class="feature-grid">
+                    <div class="feature-box">📄 Resume Analysis</div>
+                    <div class="feature-box">📊 Skill Matrix</div>
+                    <div class="feature-box">💼 Job Matching</div>
+                    <div class="feature-box">🤖 AI Mentor</div>
+                </div>
             </div>
+
+            <div class="login-card">
+                <div class="login-title">🔐 Welcome Back</div>
+                <div class="login-subtitle">
+                    Login or create your account to continue
+                </div>
+            </div>
+
         </div>
-        """, unsafe_allow_html=True)
+    </div>
+    """, unsafe_allow_html=True)
 
-    with right:
-        st.markdown("<br><br>", unsafe_allow_html=True)
-        st.markdown('<div class="glass-card">', unsafe_allow_html=True)
+    # Place actual Streamlit login form in center-right using columns
+    st.markdown("""
+    <style>
+    .block-container{
+        padding-top:2rem;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
-        st.markdown("""
-        <h2 style="text-align:center;">🔐 Welcome Back</h2>
-        <p style="text-align:center;color:#cbd5e1;">Login or create your account</p>
-        """, unsafe_allow_html=True)
+    # Overlay-style centered form using Streamlit widgets
+    empty_left, form_col, empty_right = st.columns([1.65, 1, 0.15])
+
+    with form_col:
+        st.markdown("<br><br><br><br><br><br><br><br><br>", unsafe_allow_html=True)
 
         tab1, tab2 = st.tabs(["Sign In", "Create Account"])
 
@@ -316,7 +438,7 @@ def login_page():
             username = st.text_input("Username", key="login_username")
             password = st.text_input("Password", type="password", key="login_password")
 
-            if st.button("Secure Login"):
+            if st.button("Secure Login", key="login_btn"):
                 if login_user(username, password):
                     st.session_state.logged_in = True
                     st.session_state.username = username.strip().lower()
@@ -331,17 +453,18 @@ def login_page():
             new_password = st.text_input("Create Password", type="password", key="register_password")
             confirm_password = st.text_input("Confirm Password", type="password", key="confirm_password")
 
-            if st.button("Create Account"):
+            if st.button("Create Account", key="register_btn"):
                 if new_username.strip() == "" or new_password.strip() == "":
                     st.error("Username and password cannot be empty")
+
                 elif new_password != confirm_password:
                     st.error("Passwords do not match")
+
                 elif register_user(new_username, new_password):
                     st.success("Account created successfully. Now login.")
+
                 else:
                     st.error("Username already exists")
-
-        st.markdown("</div>", unsafe_allow_html=True)
 
 
 # ---------------------------------------------------
@@ -420,6 +543,7 @@ def executive_dashboard():
         placement = 0
 
     c1, c2, c3, c4 = st.columns(4)
+
     c1.metric("🎯 Employability", f"{employability}%")
     c2.metric("📄 Resume Match", f"{match_score}%")
     c3.metric("⚠️ Missing Skills", missing_count)
@@ -536,8 +660,10 @@ def resume_intelligence():
     if st.button("🚀 Analyze Resume"):
         if uploaded_file is None:
             st.error("Please upload a resume PDF.")
+
         elif job_description.strip() == "":
             st.error("Please paste the job description.")
+
         else:
             with st.spinner("AI is analyzing your resume..."):
                 result = analyze_resume(uploaded_file, job_description)
@@ -545,6 +671,7 @@ def resume_intelligence():
 
             if "error" in result:
                 st.error(result["error"])
+
             else:
                 st.session_state.analysis_result = result
                 st.session_state.last_uploaded_name = uploaded_file.name
@@ -556,6 +683,7 @@ def resume_intelligence():
         st.markdown("---")
 
         a1, a2, a3 = st.columns(3)
+
         a1.metric("📄 Resume Match", f"{result['match_score']}%")
         a2.metric("🎯 Employability", f"{result['employability_score']}%")
         a3.metric("🧩 Skills Found", len(result["resume_skills"]))
@@ -579,8 +707,10 @@ def resume_intelligence():
             st.markdown("</div>", unsafe_allow_html=True)
 
         st.markdown('<div class="glass-card"><h2>💡 AI Suggestions</h2>', unsafe_allow_html=True)
+
         for suggestion in result["suggestions"]:
             st.write("✅", suggestion)
+
         st.markdown("</div>", unsafe_allow_html=True)
 
 
@@ -793,16 +923,22 @@ def dashboard():
 
     if page == "🏡 Executive Dashboard":
         executive_dashboard()
+
     elif page == "🧾 Resume Intelligence":
         resume_intelligence()
+
     elif page == "📈 Skill Matrix":
         skill_matrix()
+
     elif page == "💼 Job Match Engine":
         job_match_engine()
+
     elif page == "🗺️ Learning Roadmap":
         learning_roadmap()
+
     elif page == "🤖 AI Mentor":
         ai_mentor()
+
     elif page == "🪪 Profile":
         profile()
 
