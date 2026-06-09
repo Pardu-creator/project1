@@ -16,307 +16,205 @@ st.set_page_config(
 
 
 # ---------------------------------------------------
-# GLOBAL CSS
+# CSS DESIGN
 # ---------------------------------------------------
 st.markdown("""
 <style>
 
-/* ================= MAIN APP ================= */
-.stApp{
+.stApp {
     background:
-    radial-gradient(circle at top left, rgba(34,211,238,0.16), transparent 24%),
-    radial-gradient(circle at bottom right, rgba(139,92,246,0.18), transparent 24%),
-    linear-gradient(135deg, #020617 0%, #081126 45%, #0f172a 100%);
-    color:white;
+    radial-gradient(circle at top left, rgba(34,211,238,0.16), transparent 25%),
+    radial-gradient(circle at bottom right, rgba(139,92,246,0.20), transparent 25%),
+    linear-gradient(135deg, #020617 0%, #071127 45%, #0f172a 100%);
+    color: white;
 }
 
-#MainMenu {visibility:hidden;}
-footer {visibility:hidden;}
-header {visibility:hidden;}
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header {visibility: hidden;}
 
-/* ================= TEXT ================= */
-.hero-title{
-    font-size:60px;
-    font-weight:900;
-    line-height:1.08;
-    background:linear-gradient(90deg,#22d3ee,#60a5fa,#8b5cf6,#ffffff);
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
+.hero-title {
+    font-size: 58px;
+    font-weight: 900;
+    line-height: 1.1;
+    background: linear-gradient(90deg, #22d3ee, #60a5fa, #8b5cf6, #ffffff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
-.page-title{
-    font-size:44px;
-    font-weight:900;
-    margin-bottom:10px;
-    background:linear-gradient(90deg,#22d3ee,#60a5fa,#8b5cf6);
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
+.page-title {
+    font-size: 44px;
+    font-weight: 900;
+    margin-bottom: 10px;
+    background: linear-gradient(90deg, #22d3ee, #60a5fa, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
-.subtext{
-    color:#cbd5e1;
-    font-size:17px;
-    line-height:1.7;
+.subtext {
+    color: #cbd5e1;
+    font-size: 17px;
+    line-height: 1.7;
 }
 
-/* ================= CARDS ================= */
-.glass-card{
-    background:rgba(255,255,255,0.075);
-    backdrop-filter:blur(24px);
-    -webkit-backdrop-filter:blur(24px);
-    border:1px solid rgba(255,255,255,0.10);
-    border-radius:26px;
-    padding:24px;
-    margin:14px 0;
-    box-shadow:0 0 30px rgba(0,234,255,0.10);
-    transition:0.3s ease;
+.brand-card,
+.login-card,
+.glass-card {
+    background: rgba(255,255,255,0.075);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 28px;
+    padding: 28px;
+    margin: 14px 0;
+    box-shadow: 0 0 32px rgba(34,211,238,0.12);
 }
 
-.glass-card:hover{
-    transform:translateY(-4px);
-    box-shadow:0 0 38px rgba(34,211,238,0.22);
+.login-card {
+    padding: 36px;
 }
 
-.highlight-card{
-    background:linear-gradient(135deg, rgba(34,211,238,0.12), rgba(139,92,246,0.12));
-    border:1px solid rgba(255,255,255,0.10);
-    border-radius:24px;
-    padding:22px;
-    margin:12px 0;
+.login-title {
+    font-size: 38px;
+    font-weight: 900;
+    text-align: center;
+    background: linear-gradient(90deg, #22d3ee, #60a5fa, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
-.small-info{
-    background:rgba(255,255,255,0.05);
-    border:1px solid rgba(255,255,255,0.08);
-    border-radius:18px;
-    padding:16px;
-    margin-top:10px;
+.login-subtitle {
+    text-align: center;
+    color: #cbd5e1;
+    margin-bottom: 20px;
 }
 
-/* ================= ICON BADGES ================= */
-.icon-badge{
-    width:58px;
-    height:58px;
-    border-radius:18px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:28px;
-    font-weight:700;
-    background:linear-gradient(135deg,#06b6d4,#8b5cf6);
-    box-shadow:0 0 22px rgba(34,211,238,0.22);
-    margin-bottom:14px;
+.feature-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 25px;
 }
 
-.sidebar-profile-card{
-    background:linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.05));
-    border:1px solid rgba(255,255,255,0.10);
-    border-radius:28px;
-    padding:22px;
-    margin:10px 0 18px 0;
-    box-shadow:0 0 24px rgba(34,211,238,0.10);
+.feature-box {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 18px;
+    padding: 18px;
+    color: #e5e7eb;
+    font-weight: 700;
 }
 
-/* ================= INPUTS ================= */
+.highlight-card {
+    background: linear-gradient(135deg, rgba(34,211,238,0.12), rgba(139,92,246,0.12));
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 24px;
+    padding: 22px;
+    margin: 12px 0;
+}
+
+.icon-badge {
+    width: 58px;
+    height: 58px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    background: linear-gradient(135deg, #06b6d4, #8b5cf6);
+    box-shadow: 0 0 22px rgba(34,211,238,0.22);
+    margin-bottom: 14px;
+}
+
+.sidebar-profile-card {
+    background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.05));
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 28px;
+    padding: 22px;
+    margin: 12px 0 20px 0;
+    box-shadow: 0 0 24px rgba(34,211,238,0.10);
+}
+
 .stTextInput input,
-.stTextArea textarea{
-    background:rgba(255,255,255,0.08)!important;
-    color:white!important;
-    border:1px solid rgba(34,211,238,0.85)!important;
-    border-radius:16px!important;
+.stTextArea textarea {
+    background: rgba(255,255,255,0.08)!important;
+    color: white!important;
+    border: 1px solid rgba(34,211,238,0.85)!important;
+    border-radius: 16px!important;
 }
 
-.stTextInput input:focus,
-.stTextArea textarea:focus{
-    border:1px solid #8b5cf6!important;
-    box-shadow:0 0 16px rgba(139,92,246,0.35)!important;
+[data-testid="stFileUploader"] {
+    background: rgba(255,255,255,0.07);
+    border: 1px dashed rgba(34,211,238,0.7);
+    border-radius: 18px;
+    padding: 15px;
 }
 
-[data-testid="stFileUploader"]{
-    background:rgba(255,255,255,0.07);
-    border:1px dashed rgba(34,211,238,0.7);
-    border-radius:18px;
-    padding:15px;
+.stButton > button {
+    width: 100%;
+    height: 50px;
+    border: none;
+    border-radius: 16px;
+    font-weight: 800;
+    color: white;
+    background: linear-gradient(90deg, #06b6d4, #3b82f6, #8b5cf6);
+    box-shadow: 0 0 18px rgba(34,211,238,0.20);
 }
 
-/* ================= BUTTONS ================= */
-.stButton > button{
-    width:100%;
-    height:50px;
-    border:none;
-    border-radius:16px;
-    font-weight:800;
-    color:white;
-    background:linear-gradient(90deg,#06b6d4,#3b82f6,#8b5cf6);
-    box-shadow:0 0 18px rgba(34,211,238,0.20);
-    transition:0.25s;
+.stButton > button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 30px rgba(34,211,238,0.42);
 }
 
-.stButton > button:hover{
-    transform:translateY(-2px);
-    box-shadow:0 0 30px rgba(34,211,238,0.42);
+section[data-testid="stSidebar"] {
+    background: linear-gradient(180deg, rgba(8,15,35,0.99), rgba(2,6,23,0.99));
+    border-right: 1px solid rgba(255,255,255,0.08);
 }
 
-/* ================= SIDEBAR ================= */
-section[data-testid="stSidebar"]{
-    background:linear-gradient(180deg, rgba(8,15,35,0.99), rgba(2,6,23,0.99));
-    border-right:1px solid rgba(255,255,255,0.08);
+section[data-testid="stSidebar"] * {
+    color: white;
 }
 
-section[data-testid="stSidebar"] *{
-    color:white;
+[data-testid="stMetric"] {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.10);
+    padding: 18px;
+    border-radius: 22px;
+    box-shadow: 0 0 18px rgba(34,211,238,0.10);
 }
 
-/* ================= METRICS ================= */
-[data-testid="stMetric"]{
-    background:rgba(255,255,255,0.07);
-    border:1px solid rgba(255,255,255,0.10);
-    padding:18px;
-    border-radius:22px;
-    box-shadow:0 0 18px rgba(34,211,238,0.10);
+.stProgress > div > div > div > div {
+    background: linear-gradient(90deg, #22d3ee, #3b82f6, #8b5cf6);
 }
 
-/* ================= PROGRESS ================= */
-.stProgress > div > div > div > div{
-    background:linear-gradient(90deg,#22d3ee,#3b82f6,#8b5cf6);
+.skill-pill {
+    display: inline-block;
+    padding: 8px 16px;
+    margin: 6px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #06b6d4, #3b82f6);
+    color: white;
+    font-weight: 700;
 }
 
-/* ================= PILLS ================= */
-.skill-pill{
-    display:inline-block;
-    padding:8px 16px;
-    margin:6px;
-    border-radius:999px;
-    background:linear-gradient(90deg,#06b6d4,#3b82f6);
-    color:white;
-    font-weight:700;
+.missing-pill {
+    display: inline-block;
+    padding: 8px 16px;
+    margin: 6px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #ef4444, #f97316);
+    color: white;
+    font-weight: 700;
 }
 
-.missing-pill{
-    display:inline-block;
-    padding:8px 16px;
-    margin:6px;
-    border-radius:999px;
-    background:linear-gradient(90deg,#ef4444,#f97316);
-    color:white;
-    font-weight:700;
-}
-
-.role-pill{
-    display:inline-block;
-    padding:8px 16px;
-    margin:6px;
-    border-radius:999px;
-    background:linear-gradient(90deg,#22c55e,#14b8a6);
-    color:white;
-    font-weight:700;
-}
-
-/* ================= LOGIN PAGE ================= */
-.login-wrapper{
-    min-height:92vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
-
-.login-container{
-    width:100%;
-    max-width:1180px;
-    display:grid;
-    grid-template-columns:1.1fr 0.9fr;
-    gap:48px;
-    align-items:center;
-}
-
-.brand-card{
-    background:rgba(255,255,255,0.065);
-    border:1px solid rgba(255,255,255,0.12);
-    border-radius:34px;
-    padding:44px;
-    box-shadow:0 0 40px rgba(34,211,238,0.12);
-}
-
-.login-card{
-    background:rgba(255,255,255,0.085);
-    backdrop-filter:blur(28px);
-    -webkit-backdrop-filter:blur(28px);
-    border:1px solid rgba(255,255,255,0.14);
-    border-radius:34px;
-    padding:38px;
-    box-shadow:0 0 45px rgba(139,92,246,0.18);
-}
-
-.login-title{
-    font-size:40px;
-    font-weight:900;
-    text-align:center;
-    margin-bottom:8px;
-    background:linear-gradient(90deg,#22d3ee,#60a5fa,#8b5cf6);
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
-}
-
-.login-subtitle{
-    text-align:center;
-    color:#cbd5e1;
-    margin-bottom:28px;
-    font-size:16px;
-}
-
-.feature-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:14px;
-    margin-top:28px;
-}
-
-.feature-box{
-    background:rgba(255,255,255,0.07);
-    border:1px solid rgba(255,255,255,0.10);
-    border-radius:20px;
-    padding:18px;
-    color:#e5e7eb;
-    font-weight:700;
-}
-
-.brand-description{
-    color:#cbd5e1;
-    font-size:18px;
-    line-height:1.7;
-    margin-top:22px;
-}
-
-.stTabs [data-baseweb="tab-list"]{
-    justify-content:center;
-}
-
-.stTabs [data-baseweb="tab"]{
-    font-weight:800;
-    padding:12px 20px;
-}
-
-.chat-header{
-    background:linear-gradient(135deg, rgba(34,211,238,0.12), rgba(139,92,246,0.12));
-    border:1px solid rgba(255,255,255,0.10);
-    border-radius:24px;
-    padding:22px;
-    margin-bottom:12px;
-}
-
-@media(max-width:900px){
-    .login-container{
-        grid-template-columns:1fr;
-    }
-
-    .hero-title{
-        font-size:42px;
-        text-align:center;
-    }
-
-    .brand-description{
-        text-align:center;
-    }
+.role-pill {
+    display: inline-block;
+    padding: 8px 16px;
+    margin: 6px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #22c55e, #14b8a6);
+    color: white;
+    font-weight: 700;
 }
 
 </style>
@@ -356,10 +254,8 @@ def page_heading(title, subtitle=""):
 def pills(items, pill_type="skill-pill"):
     if items:
         html = ""
-
         for item in items:
             html += f'<span class="{pill_type}">{item}</span>'
-
         st.markdown(html, unsafe_allow_html=True)
     else:
         st.info("No data available")
@@ -380,57 +276,44 @@ def score_label(score):
 # LOGIN PAGE
 # ---------------------------------------------------
 def login_page():
-    st.markdown("""
-    <div class="login-wrapper">
-        <div class="login-container">
+    st.markdown("<br><br>", unsafe_allow_html=True)
 
-            <div class="brand-card">
-                <div class="hero-title">
-                    Skill-Gap Aware Employability
-                </div>
+    left, right = st.columns([1.2, 1], gap="large")
 
-                <h2 style="color:white;margin-top:22px;">
-                    AI Powered Career Assessment Platform
-                </h2>
-
-                <p class="brand-description">
-                    Analyze resumes, identify missing skills, calculate employability score,
-                    suggest job roles, and get AI-powered career guidance through an intelligent mentor.
-                </p>
-
-                <div class="feature-grid">
-                    <div class="feature-box">📄 Resume Analysis</div>
-                    <div class="feature-box">📊 Skill Matrix</div>
-                    <div class="feature-box">💼 Job Matching</div>
-                    <div class="feature-box">🤖 AI Mentor</div>
-                </div>
+    with left:
+        st.markdown("""
+        <div class="brand-card">
+            <div class="hero-title">
+                Skill-Gap Aware Employability
             </div>
 
-            <div class="login-card">
-                <div class="login-title">🔐 Welcome Back</div>
-                <div class="login-subtitle">
-                    Login or create your account to continue
-                </div>
-            </div>
+            <h2 style="color:white;margin-top:22px;">
+                AI Powered Career Assessment Platform
+            </h2>
 
+            <p class="subtext">
+                Analyze resumes, identify missing skills, calculate employability score,
+                suggest job roles, and get AI-powered career guidance through an intelligent mentor.
+            </p>
+
+            <div class="feature-grid">
+                <div class="feature-box">📄 Resume Analysis</div>
+                <div class="feature-box">📊 Skill Matrix</div>
+                <div class="feature-box">💼 Job Matching</div>
+                <div class="feature-box">🤖 AI Mentor</div>
+            </div>
         </div>
-    </div>
-    """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
 
-    # Place actual Streamlit login form in center-right using columns
-    st.markdown("""
-    <style>
-    .block-container{
-        padding-top:2rem;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
-    # Overlay-style centered form using Streamlit widgets
-    empty_left, form_col, empty_right = st.columns([1.65, 1, 0.15])
-
-    with form_col:
-        st.markdown("<br><br><br><br><br><br><br><br><br>", unsafe_allow_html=True)
+    with right:
+        st.markdown("""
+        <div class="login-card">
+            <div class="login-title">🔐 Welcome Back</div>
+            <div class="login-subtitle">
+                Login or create your account to continue
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
         tab1, tab2 = st.tabs(["Sign In", "Create Account"])
 
@@ -456,13 +339,10 @@ def login_page():
             if st.button("Create Account", key="register_btn"):
                 if new_username.strip() == "" or new_password.strip() == "":
                     st.error("Username and password cannot be empty")
-
                 elif new_password != confirm_password:
                     st.error("Passwords do not match")
-
                 elif register_user(new_username, new_password):
                     st.success("Account created successfully. Now login.")
-
                 else:
                     st.error("Username already exists")
 
@@ -598,12 +478,6 @@ def executive_dashboard():
         st.progress(match_score / 100 if match_score else 0)
         st.caption("Resume Match Progress")
 
-        st.markdown("""
-        <div class="small-info">
-            <b>Insight:</b> Better skill alignment and stronger projects improve both employability and job match.
-        </div>
-        """, unsafe_allow_html=True)
-
         st.markdown("</div>", unsafe_allow_html=True)
 
     if result:
@@ -660,10 +534,8 @@ def resume_intelligence():
     if st.button("🚀 Analyze Resume"):
         if uploaded_file is None:
             st.error("Please upload a resume PDF.")
-
         elif job_description.strip() == "":
             st.error("Please paste the job description.")
-
         else:
             with st.spinner("AI is analyzing your resume..."):
                 result = analyze_resume(uploaded_file, job_description)
@@ -671,7 +543,6 @@ def resume_intelligence():
 
             if "error" in result:
                 st.error(result["error"])
-
             else:
                 st.session_state.analysis_result = result
                 st.session_state.last_uploaded_name = uploaded_file.name
@@ -826,7 +697,7 @@ def ai_mentor():
     )
 
     st.markdown("""
-    <div class="chat-header">
+    <div class="glass-card">
         <div class="icon-badge">🤖</div>
         <h2>AI Career Mentor</h2>
         <p class="subtext">
@@ -923,22 +794,16 @@ def dashboard():
 
     if page == "🏡 Executive Dashboard":
         executive_dashboard()
-
     elif page == "🧾 Resume Intelligence":
         resume_intelligence()
-
     elif page == "📈 Skill Matrix":
         skill_matrix()
-
     elif page == "💼 Job Match Engine":
         job_match_engine()
-
     elif page == "🗺️ Learning Roadmap":
         learning_roadmap()
-
     elif page == "🤖 AI Mentor":
         ai_mentor()
-
     elif page == "🪪 Profile":
         profile()
 
