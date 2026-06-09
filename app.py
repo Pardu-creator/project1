@@ -16,11 +16,11 @@ st.set_page_config(
 
 
 # ---------------------------------------------------
-# CSS DESIGN
+# CSS
 # ---------------------------------------------------
-st.markdown("""
+st.markdown(
+    """
 <style>
-
 .stApp {
     background:
     radial-gradient(circle at top left, rgba(34,211,238,0.16), transparent 25%),
@@ -34,7 +34,7 @@ footer {visibility: hidden;}
 header {visibility: hidden;}
 
 .hero-title {
-    font-size: 58px;
+    font-size: 56px;
     font-weight: 900;
     line-height: 1.1;
     background: linear-gradient(90deg, #22d3ee, #60a5fa, #8b5cf6, #ffffff);
@@ -216,9 +216,10 @@ section[data-testid="stSidebar"] * {
     color: white;
     font-weight: 700;
 }
-
 </style>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
 
 
 # ---------------------------------------------------
@@ -281,39 +282,22 @@ def login_page():
     left, right = st.columns([1.2, 1], gap="large")
 
     with left:
-        st.markdown("""
-        <div class="brand-card">
-            <div class="hero-title">
-                Skill-Gap Aware Employability
-            </div>
-
-            <h2 style="color:white;margin-top:22px;">
-                AI Powered Career Assessment Platform
-            </h2>
-
-            <p class="subtext">
-                Analyze resumes, identify missing skills, calculate employability score,
-                suggest job roles, and get AI-powered career guidance through an intelligent mentor.
-            </p>
-
-            <div class="feature-grid">
-                <div class="feature-box">📄 Resume Analysis</div>
-                <div class="feature-box">📊 Skill Matrix</div>
-                <div class="feature-box">💼 Job Matching</div>
-                <div class="feature-box">🤖 AI Mentor</div>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown('<div class="brand-card">', unsafe_allow_html=True)
+        st.markdown('<div class="hero-title">Skill-Gap Aware Employability</div>', unsafe_allow_html=True)
+        st.markdown('<h2 style="color:white;margin-top:22px;">AI Powered Career Assessment Platform</h2>', unsafe_allow_html=True)
+        st.markdown('<p class="subtext">Analyze resumes, identify missing skills, calculate employability score, suggest job roles, and get AI-powered career guidance through an intelligent mentor.</p>', unsafe_allow_html=True)
+        st.markdown('<div class="feature-grid">', unsafe_allow_html=True)
+        st.markdown('<div class="feature-box">📄 Resume Analysis</div>', unsafe_allow_html=True)
+        st.markdown('<div class="feature-box">📊 Skill Matrix</div>', unsafe_allow_html=True)
+        st.markdown('<div class="feature-box">💼 Job Matching</div>', unsafe_allow_html=True)
+        st.markdown('<div class="feature-box">🤖 AI Mentor</div>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
     with right:
-        st.markdown("""
-        <div class="login-card">
-            <div class="login-title">🔐 Welcome Back</div>
-            <div class="login-subtitle">
-                Login or create your account to continue
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown('<div class="login-card">', unsafe_allow_html=True)
+        st.markdown('<div class="login-title">🔐 Welcome Back</div>', unsafe_allow_html=True)
+        st.markdown('<div class="login-subtitle">Login or create your account to continue</div>', unsafe_allow_html=True)
 
         tab1, tab2 = st.tabs(["Sign In", "Create Account"])
 
@@ -346,6 +330,8 @@ def login_page():
                 else:
                     st.error("Username already exists")
 
+        st.markdown('</div>', unsafe_allow_html=True)
+
 
 # ---------------------------------------------------
 # SIDEBAR
@@ -353,13 +339,14 @@ def login_page():
 def render_sidebar():
     st.sidebar.markdown("## ⚡ AI Navigation")
 
-    st.sidebar.markdown(f"""
-    <div class="sidebar-profile-card">
-        <div style="font-size:42px;margin-bottom:8px;">🪪</div>
-        <h3 style="margin:0;">{st.session_state.username}</h3>
-        <p style="color:#cbd5e1;margin-top:10px;">Career Intelligence Profile</p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.sidebar.markdown(
+        f'<div class="sidebar-profile-card">'
+        f'<div style="font-size:42px;margin-bottom:8px;">🪪</div>'
+        f'<h3 style="margin:0;">{st.session_state.username}</h3>'
+        f'<p style="color:#cbd5e1;margin-top:10px;">Career Intelligence Profile</p>'
+        f'</div>',
+        unsafe_allow_html=True
+    )
 
     page = st.sidebar.radio(
         "Choose Module",
@@ -376,15 +363,14 @@ def render_sidebar():
 
     st.sidebar.markdown("---")
 
-    st.sidebar.markdown("""
-    <div class="highlight-card">
-        <div style="font-size:30px;">💡</div>
-        <h4 style="margin-top:10px;">Smart Tip</h4>
-        <p style="color:#cbd5e1;">
-            Upload your resume and a job description to unlock full AI-based career insights.
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.sidebar.markdown(
+        '<div class="highlight-card">'
+        '<div style="font-size:30px;">💡</div>'
+        '<h4 style="margin-top:10px;">Smart Tip</h4>'
+        '<p style="color:#cbd5e1;">Upload your resume and a job description to unlock full AI-based career insights.</p>'
+        '</div>',
+        unsafe_allow_html=True
+    )
 
     st.sidebar.markdown("---")
 
@@ -423,7 +409,6 @@ def executive_dashboard():
         placement = 0
 
     c1, c2, c3, c4 = st.columns(4)
-
     c1.metric("🎯 Employability", f"{employability}%")
     c2.metric("📄 Resume Match", f"{match_score}%")
     c3.metric("⚠️ Missing Skills", missing_count)
@@ -434,11 +419,7 @@ def executive_dashboard():
     col1, col2 = st.columns([1.45, 1], gap="large")
 
     with col1:
-        st.markdown("""
-        <div class="glass-card">
-            <div class="icon-badge">🧠</div>
-            <h2>AI Career Summary</h2>
-        """, unsafe_allow_html=True)
+        st.markdown('<div class="glass-card"><div class="icon-badge">🧠</div><h2>AI Career Summary</h2>', unsafe_allow_html=True)
 
         if result:
             st.write(
@@ -453,32 +434,26 @@ def executive_dashboard():
                 "to generate real-time AI career analysis."
             )
 
-        st.markdown("</div>", unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
-        st.markdown("""
-        <div class="highlight-card">
-            <h3>📌 Recommended Actions</h3>
-            <p>• Strengthen missing technical skills</p>
-            <p>• Add 2–3 strong projects to your resume</p>
-            <p>• Improve GitHub and LinkedIn visibility</p>
-            <p>• Practice role-based interview preparation</p>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(
+            '<div class="highlight-card">'
+            '<h3>📌 Recommended Actions</h3>'
+            '<p>• Strengthen missing technical skills</p>'
+            '<p>• Add 2–3 strong projects to your resume</p>'
+            '<p>• Improve GitHub and LinkedIn visibility</p>'
+            '<p>• Practice role-based interview preparation</p>'
+            '</div>',
+            unsafe_allow_html=True
+        )
 
     with col2:
-        st.markdown("""
-        <div class="glass-card">
-            <div class="icon-badge">📊</div>
-            <h2>Progress Overview</h2>
-        """, unsafe_allow_html=True)
-
+        st.markdown('<div class="glass-card"><div class="icon-badge">📊</div><h2>Progress Overview</h2>', unsafe_allow_html=True)
         st.progress(employability / 100 if employability else 0)
         st.caption("Employability Progress")
-
         st.progress(match_score / 100 if match_score else 0)
         st.caption("Resume Match Progress")
-
-        st.markdown("</div>", unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
     if result:
         x1, x2 = st.columns(2, gap="large")
@@ -486,12 +461,12 @@ def executive_dashboard():
         with x1:
             st.markdown('<div class="glass-card"><h2>✅ Strong Skills</h2>', unsafe_allow_html=True)
             pills(result["matched_skills"], "skill-pill")
-            st.markdown("</div>", unsafe_allow_html=True)
+            st.markdown('</div>', unsafe_allow_html=True)
 
         with x2:
             st.markdown('<div class="glass-card"><h2>⚠️ Missing Skills</h2>', unsafe_allow_html=True)
             pills(result["missing_skills"], "missing-pill")
-            st.markdown("</div>", unsafe_allow_html=True)
+            st.markdown('</div>', unsafe_allow_html=True)
 
 
 # ---------------------------------------------------
@@ -506,25 +481,21 @@ def resume_intelligence():
     col1, col2 = st.columns(2, gap="large")
 
     with col1:
-        st.markdown("""
-        <div class="glass-card">
-            <div class="icon-badge">📄</div>
-            <h3>Upload Resume PDF</h3>
-            <p class="subtext">Upload a text-based PDF resume for AI analysis.</p>
-        </div>
-        """, unsafe_allow_html=True)
-
+        st.markdown(
+            '<div class="glass-card"><div class="icon-badge">📄</div>'
+            '<h3>Upload Resume PDF</h3>'
+            '<p class="subtext">Upload a text-based PDF resume for AI analysis.</p></div>',
+            unsafe_allow_html=True
+        )
         uploaded_file = st.file_uploader("Upload Resume PDF", type=["pdf"])
 
     with col2:
-        st.markdown("""
-        <div class="glass-card">
-            <div class="icon-badge">💼</div>
-            <h3>Paste Job Description</h3>
-            <p class="subtext">Paste the target job description for skill comparison.</p>
-        </div>
-        """, unsafe_allow_html=True)
-
+        st.markdown(
+            '<div class="glass-card"><div class="icon-badge">💼</div>'
+            '<h3>Paste Job Description</h3>'
+            '<p class="subtext">Paste the target job description for skill comparison.</p></div>',
+            unsafe_allow_html=True
+        )
         job_description = st.text_area(
             "Paste Job Description",
             height=220,
@@ -554,7 +525,6 @@ def resume_intelligence():
         st.markdown("---")
 
         a1, a2, a3 = st.columns(3)
-
         a1.metric("📄 Resume Match", f"{result['match_score']}%")
         a2.metric("🎯 Employability", f"{result['employability_score']}%")
         a3.metric("🧩 Skills Found", len(result["resume_skills"]))
@@ -570,19 +540,17 @@ def resume_intelligence():
         with b1:
             st.markdown('<div class="glass-card"><h2>✅ Matched Skills</h2>', unsafe_allow_html=True)
             pills(result["matched_skills"], "skill-pill")
-            st.markdown("</div>", unsafe_allow_html=True)
+            st.markdown('</div>', unsafe_allow_html=True)
 
         with b2:
             st.markdown('<div class="glass-card"><h2>⚠️ Missing Skills</h2>', unsafe_allow_html=True)
             pills(result["missing_skills"], "missing-pill")
-            st.markdown("</div>", unsafe_allow_html=True)
+            st.markdown('</div>', unsafe_allow_html=True)
 
         st.markdown('<div class="glass-card"><h2>💡 AI Suggestions</h2>', unsafe_allow_html=True)
-
         for suggestion in result["suggestions"]:
             st.write("✅", suggestion)
-
-        st.markdown("</div>", unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
 
 # ---------------------------------------------------
@@ -613,13 +581,12 @@ def skill_matrix():
             value = random.randint(55, 75)
             status = "Moderate"
 
-        st.markdown(f"""
-        <div class="glass-card">
-            <div class="icon-badge">📈</div>
-            <h3>{skill}</h3>
-            <p style="color:#cbd5e1;">Status: <b>{status}</b></p>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(
+            f'<div class="glass-card"><div class="icon-badge">📈</div>'
+            f'<h3>{skill}</h3>'
+            f'<p style="color:#cbd5e1;">Status: <b>{status}</b></p></div>',
+            unsafe_allow_html=True
+        )
 
         st.progress(value / 100)
         st.caption(f"{value}% proficiency estimate")
@@ -646,18 +613,17 @@ def job_match_engine():
         score = random.randint(74, 96)
 
         with cols[i % 2]:
-            st.markdown(f"""
-            <div class="glass-card">
-                <div class="icon-badge">💼</div>
-                <h2>{role}</h2>
-                <h1>{score}%</h1>
-                <p class="subtext">AI compatibility score for this role</p>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown(
+                f'<div class="glass-card"><div class="icon-badge">💼</div>'
+                f'<h2>{role}</h2>'
+                f'<h1>{score}%</h1>'
+                f'<p class="subtext">AI compatibility score for this role</p></div>',
+                unsafe_allow_html=True
+            )
 
     st.markdown('<div class="glass-card"><h2>🎯 Suggested Roles</h2>', unsafe_allow_html=True)
     pills(result["job_roles"], "role-pill")
-    st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
 
 # ---------------------------------------------------
@@ -678,13 +644,12 @@ def learning_roadmap():
     roadmap = result.get("roadmap", [])
 
     for item in roadmap:
-        st.markdown(f"""
-        <div class="glass-card">
-            <div class="icon-badge">🗺️</div>
-            <h2>{item["week"]}: {item["skill"]}</h2>
-            <p>{item["task"]}</p>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(
+            f'<div class="glass-card"><div class="icon-badge">🗺️</div>'
+            f'<h2>{item["week"]}: {item["skill"]}</h2>'
+            f'<p>{item["task"]}</p></div>',
+            unsafe_allow_html=True
+        )
 
 
 # ---------------------------------------------------
@@ -696,16 +661,12 @@ def ai_mentor():
         "Chat with your AI career mentor like ChatGPT."
     )
 
-    st.markdown("""
-    <div class="glass-card">
-        <div class="icon-badge">🤖</div>
-        <h2>AI Career Mentor</h2>
-        <p class="subtext">
-            Ask about resume improvement, projects, missing skills, internships,
-            interview preparation, job roles, or learning roadmap.
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown(
+        '<div class="glass-card"><div class="icon-badge">🤖</div>'
+        '<h2>AI Career Mentor</h2>'
+        '<p class="subtext">Ask about resume improvement, projects, missing skills, internships, interview preparation, job roles, or learning roadmap.</p></div>',
+        unsafe_allow_html=True
+    )
 
     if st.button("Clear Chat"):
         st.session_state.mentor_chat = []
@@ -766,24 +727,23 @@ def profile():
         missing = "Not analyzed"
         uploaded_resume = "No resume uploaded"
 
-    st.markdown(f"""
-    <div class="glass-card">
-        <div class="icon-badge">🪪</div>
-        <h2>User Profile</h2>
-        <p><b>Username:</b> {st.session_state.username}</p>
-        <p><b>Uploaded Resume:</b> {uploaded_resume}</p>
-        <p><b>Employability Score:</b> {employability}</p>
-        <p><b>Resume Match Score:</b> {match_score}</p>
-        <p><b>Total Skills Found:</b> {total_skills}</p>
-        <p><b>Missing Skills:</b> {missing}</p>
-        <p><b>Growth Curve:</b> Rising</p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown(
+        f'<div class="glass-card"><div class="icon-badge">🪪</div>'
+        f'<h2>User Profile</h2>'
+        f'<p><b>Username:</b> {st.session_state.username}</p>'
+        f'<p><b>Uploaded Resume:</b> {uploaded_resume}</p>'
+        f'<p><b>Employability Score:</b> {employability}</p>'
+        f'<p><b>Resume Match Score:</b> {match_score}</p>'
+        f'<p><b>Total Skills Found:</b> {total_skills}</p>'
+        f'<p><b>Missing Skills:</b> {missing}</p>'
+        f'<p><b>Growth Curve:</b> Rising</p></div>',
+        unsafe_allow_html=True
+    )
 
     if result and result["job_roles"]:
         st.markdown('<div class="glass-card"><h2>💼 Best Matched Roles</h2>', unsafe_allow_html=True)
         pills(result["job_roles"], "role-pill")
-        st.markdown("</div>", unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
 
 # ---------------------------------------------------
