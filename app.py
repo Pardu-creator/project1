@@ -33,15 +33,6 @@ st.markdown(
 footer {visibility: hidden;}
 header {visibility: hidden;}
 
-.hero-title {
-    font-size: 56px;
-    font-weight: 900;
-    line-height: 1.1;
-    background: linear-gradient(90deg, #22d3ee, #60a5fa, #8b5cf6, #ffffff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
 .page-title {
     font-size: 44px;
     font-weight: 900;
@@ -57,8 +48,33 @@ header {visibility: hidden;}
     line-height: 1.7;
 }
 
-.brand-card,
-.login-card,
+.login-card {
+    background: rgba(255,255,255,0.09);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 30px;
+    padding: 42px;
+    box-shadow: 0 0 45px rgba(34,211,238,0.18);
+}
+
+.login-title {
+    font-size: 42px;
+    font-weight: 900;
+    text-align: center;
+    margin-bottom: 8px;
+    background: linear-gradient(90deg, #22d3ee, #60a5fa, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.login-subtitle {
+    text-align: center;
+    color: #cbd5e1;
+    margin-bottom: 28px;
+    font-size: 16px;
+}
+
 .glass-card {
     background: rgba(255,255,255,0.075);
     backdrop-filter: blur(24px);
@@ -68,41 +84,6 @@ header {visibility: hidden;}
     padding: 28px;
     margin: 14px 0;
     box-shadow: 0 0 32px rgba(34,211,238,0.12);
-}
-
-.login-card {
-    padding: 36px;
-}
-
-.login-title {
-    font-size: 38px;
-    font-weight: 900;
-    text-align: center;
-    background: linear-gradient(90deg, #22d3ee, #60a5fa, #8b5cf6);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.login-subtitle {
-    text-align: center;
-    color: #cbd5e1;
-    margin-bottom: 20px;
-}
-
-.feature-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-    margin-top: 25px;
-}
-
-.feature-box {
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.10);
-    border-radius: 18px;
-    padding: 18px;
-    color: #e5e7eb;
-    font-weight: 700;
 }
 
 .highlight-card {
@@ -274,38 +255,36 @@ def score_label(score):
 
 
 # ---------------------------------------------------
-# LOGIN PAGE
+# LOGIN PAGE - ONLY CENTER LOGIN CREDENTIALS
 # ---------------------------------------------------
 def login_page():
-    st.markdown("<br><br>", unsafe_allow_html=True)
+    st.markdown("<br><br><br>", unsafe_allow_html=True)
 
-    left, right = st.columns([1.2, 1], gap="large")
+    col1, col2, col3 = st.columns([1, 1.15, 1])
 
-    with left:
-        st.markdown('<div class="brand-card">', unsafe_allow_html=True)
-        st.markdown('<div class="hero-title">Skill-Gap Aware Employability</div>', unsafe_allow_html=True)
-        st.markdown('<h2 style="color:white;margin-top:22px;">AI Powered Career Assessment Platform</h2>', unsafe_allow_html=True)
-        st.markdown('<p class="subtext">Analyze resumes, identify missing skills, calculate employability score, suggest job roles, and get AI-powered career guidance through an intelligent mentor.</p>', unsafe_allow_html=True)
-        st.markdown('<div class="feature-grid">', unsafe_allow_html=True)
-        st.markdown('<div class="feature-box">📄 Resume Analysis</div>', unsafe_allow_html=True)
-        st.markdown('<div class="feature-box">📊 Skill Matrix</div>', unsafe_allow_html=True)
-        st.markdown('<div class="feature-box">💼 Job Matching</div>', unsafe_allow_html=True)
-        st.markdown('<div class="feature-box">🤖 AI Mentor</div>', unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
-
-    with right:
+    with col2:
         st.markdown('<div class="login-card">', unsafe_allow_html=True)
-        st.markdown('<div class="login-title">🔐 Welcome Back</div>', unsafe_allow_html=True)
-        st.markdown('<div class="login-subtitle">Login or create your account to continue</div>', unsafe_allow_html=True)
+        st.markdown('<div class="login-title">🔐 Login</div>', unsafe_allow_html=True)
+        st.markdown(
+            '<div class="login-subtitle">Enter your username and password</div>',
+            unsafe_allow_html=True
+        )
 
         tab1, tab2 = st.tabs(["Sign In", "Create Account"])
 
         with tab1:
-            username = st.text_input("Username", key="login_username")
-            password = st.text_input("Password", type="password", key="login_password")
+            username = st.text_input(
+                "Username",
+                key="login_username"
+            )
 
-            if st.button("Secure Login", key="login_btn"):
+            password = st.text_input(
+                "Password",
+                type="password",
+                key="login_password"
+            )
+
+            if st.button("Login", key="login_btn"):
                 if login_user(username, password):
                     st.session_state.logged_in = True
                     st.session_state.username = username.strip().lower()
@@ -316,17 +295,33 @@ def login_page():
                     st.error("Invalid username or password")
 
         with tab2:
-            new_username = st.text_input("Create Username", key="register_username")
-            new_password = st.text_input("Create Password", type="password", key="register_password")
-            confirm_password = st.text_input("Confirm Password", type="password", key="confirm_password")
+            new_username = st.text_input(
+                "Create Username",
+                key="register_username"
+            )
 
-            if st.button("Create Account", key="register_btn"):
+            new_password = st.text_input(
+                "Create Password",
+                type="password",
+                key="register_password"
+            )
+
+            confirm_password = st.text_input(
+                "Confirm Password",
+                type="password",
+                key="confirm_password"
+            )
+
+            if st.button("Register", key="register_btn"):
                 if new_username.strip() == "" or new_password.strip() == "":
                     st.error("Username and password cannot be empty")
+
                 elif new_password != confirm_password:
                     st.error("Passwords do not match")
+
                 elif register_user(new_username, new_password):
                     st.success("Account created successfully. Now login.")
+
                 else:
                     st.error("Username already exists")
 
@@ -409,6 +404,7 @@ def executive_dashboard():
         placement = 0
 
     c1, c2, c3, c4 = st.columns(4)
+
     c1.metric("🎯 Employability", f"{employability}%")
     c2.metric("📄 Resume Match", f"{match_score}%")
     c3.metric("⚠️ Missing Skills", missing_count)
@@ -419,7 +415,10 @@ def executive_dashboard():
     col1, col2 = st.columns([1.45, 1], gap="large")
 
     with col1:
-        st.markdown('<div class="glass-card"><div class="icon-badge">🧠</div><h2>AI Career Summary</h2>', unsafe_allow_html=True)
+        st.markdown(
+            '<div class="glass-card"><div class="icon-badge">🧠</div><h2>AI Career Summary</h2>',
+            unsafe_allow_html=True
+        )
 
         if result:
             st.write(
@@ -448,7 +447,10 @@ def executive_dashboard():
         )
 
     with col2:
-        st.markdown('<div class="glass-card"><div class="icon-badge">📊</div><h2>Progress Overview</h2>', unsafe_allow_html=True)
+        st.markdown(
+            '<div class="glass-card"><div class="icon-badge">📊</div><h2>Progress Overview</h2>',
+            unsafe_allow_html=True
+        )
         st.progress(employability / 100 if employability else 0)
         st.caption("Employability Progress")
         st.progress(match_score / 100 if match_score else 0)
@@ -505,8 +507,10 @@ def resume_intelligence():
     if st.button("🚀 Analyze Resume"):
         if uploaded_file is None:
             st.error("Please upload a resume PDF.")
+
         elif job_description.strip() == "":
             st.error("Please paste the job description.")
+
         else:
             with st.spinner("AI is analyzing your resume..."):
                 result = analyze_resume(uploaded_file, job_description)
@@ -514,6 +518,7 @@ def resume_intelligence():
 
             if "error" in result:
                 st.error(result["error"])
+
             else:
                 st.session_state.analysis_result = result
                 st.session_state.last_uploaded_name = uploaded_file.name
@@ -525,6 +530,7 @@ def resume_intelligence():
         st.markdown("---")
 
         a1, a2, a3 = st.columns(3)
+
         a1.metric("📄 Resume Match", f"{result['match_score']}%")
         a2.metric("🎯 Employability", f"{result['employability_score']}%")
         a3.metric("🧩 Skills Found", len(result["resume_skills"]))
@@ -548,8 +554,10 @@ def resume_intelligence():
             st.markdown('</div>', unsafe_allow_html=True)
 
         st.markdown('<div class="glass-card"><h2>💡 AI Suggestions</h2>', unsafe_allow_html=True)
+
         for suggestion in result["suggestions"]:
             st.write("✅", suggestion)
+
         st.markdown('</div>', unsafe_allow_html=True)
 
 
@@ -754,16 +762,22 @@ def dashboard():
 
     if page == "🏡 Executive Dashboard":
         executive_dashboard()
+
     elif page == "🧾 Resume Intelligence":
         resume_intelligence()
+
     elif page == "📈 Skill Matrix":
         skill_matrix()
+
     elif page == "💼 Job Match Engine":
         job_match_engine()
+
     elif page == "🗺️ Learning Roadmap":
         learning_roadmap()
+
     elif page == "🤖 AI Mentor":
         ai_mentor()
+
     elif page == "🪪 Profile":
         profile()
 
