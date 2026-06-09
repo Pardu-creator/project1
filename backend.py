@@ -4,6 +4,13 @@ import hashlib
 import re
 from pypdf import PdfReader
 
+try:
+    import streamlit as st
+    from openai import OpenAI
+except Exception:
+    st = None
+    OpenAI = None
+
 
 # ==========================================================
 # FILE PATHS
@@ -12,13 +19,9 @@ USER_FILE = "users.json"
 
 
 # ==========================================================
-# USER AUTHENTICATION SYSTEM
+# USER AUTHENTICATION
 # ==========================================================
 def load_users():
-    """
-    Load users from users.json.
-    If file does not exist, return empty dictionary.
-    """
     if not os.path.exists(USER_FILE):
         return {}
 
@@ -30,27 +33,17 @@ def load_users():
 
 
 def save_users(users):
-    """
-    Save users into users.json.
-    """
     with open(USER_FILE, "w") as file:
         json.dump(users, file, indent=4)
 
 
 def hash_password(password):
-    """
-    Convert password into secure hash.
-    """
     return hashlib.sha256(password.encode()).hexdigest()
 
 
 def register_user(username, password):
-    """
-    Register new user.
-    Returns True if account is created.
-    Returns False if username already exists or fields are empty.
-    """
     username = username.strip().lower()
+    password = password.strip()
 
     if username == "" or password == "":
         return False
@@ -69,11 +62,8 @@ def register_user(username, password):
 
 
 def login_user(username, password):
-    """
-    Login existing user.
-    Returns True if username and password are correct.
-    """
     username = username.strip().lower()
+    password = password.strip()
 
     if username == "" or password == "":
         return False
@@ -87,13 +77,9 @@ def login_user(username, password):
 
 
 # ==========================================================
-# RESUME PDF TEXT EXTRACTION USING PYPDF
+# PDF TEXT EXTRACTION
 # ==========================================================
 def extract_resume_text(uploaded_file):
-    """
-    Extract text from uploaded PDF resume.
-    Works with Streamlit file_uploader.
-    """
     text = ""
 
     try:
@@ -115,106 +101,34 @@ def extract_resume_text(uploaded_file):
 # SKILL DATABASE
 # ==========================================================
 SKILLS = [
-    # Programming Languages
-    "python",
-    "java",
-    "c",
-    "c++",
-    "javascript",
-    "typescript",
-    "php",
-    "ruby",
-    "go",
-    "rust",
-    "kotlin",
-    "swift",
+    "python", "java", "c", "c++", "javascript", "typescript",
+    "html", "css", "react", "angular", "vue", "node js",
+    "express js", "bootstrap", "tailwind", "django", "flask",
+    "fastapi", "streamlit",
 
-    # Web Development
-    "html",
-    "css",
-    "react",
-    "angular",
-    "vue",
-    "node js",
-    "express js",
-    "bootstrap",
-    "tailwind",
-    "django",
-    "flask",
-    "fastapi",
-    "streamlit",
+    "sql", "mysql", "postgresql", "mongodb", "sqlite",
+    "oracle", "firebase", "redis",
 
-    # Databases
-    "sql",
-    "mysql",
-    "postgresql",
-    "mongodb",
-    "sqlite",
-    "oracle",
-    "firebase",
-    "redis",
+    "data science", "data analysis", "machine learning",
+    "deep learning", "artificial intelligence", "statistics",
+    "numpy", "pandas", "matplotlib", "seaborn", "scikit learn",
+    "tensorflow", "keras", "pytorch", "opencv", "nlp",
+    "computer vision", "power bi", "tableau", "excel",
 
-    # Data Science
-    "data science",
-    "data analysis",
-    "machine learning",
-    "deep learning",
-    "artificial intelligence",
-    "statistics",
-    "numpy",
-    "pandas",
-    "matplotlib",
-    "seaborn",
-    "scikit learn",
-    "tensorflow",
-    "keras",
-    "pytorch",
-    "opencv",
-    "nlp",
-    "computer vision",
-    "power bi",
-    "tableau",
-    "excel",
+    "aws", "azure", "google cloud", "gcp", "docker",
+    "kubernetes", "jenkins", "git", "github", "gitlab",
+    "linux", "ci cd",
 
-    # Cloud / DevOps
-    "aws",
-    "azure",
-    "google cloud",
-    "gcp",
-    "docker",
-    "kubernetes",
-    "jenkins",
-    "git",
-    "github",
-    "gitlab",
-    "linux",
-    "ci cd",
-
-    # Software Engineering
-    "data structures",
-    "algorithms",
-    "oops",
-    "object oriented programming",
-    "system design",
-    "api",
-    "rest api",
-    "microservices",
-    "software testing",
+    "data structures", "algorithms", "oops",
+    "object oriented programming", "system design", "api",
+    "rest api", "microservices", "software testing",
     "debugging",
 
-    # Cybersecurity
-    "cyber security",
-    "network security",
-    "ethical hacking",
+    "cyber security", "network security", "ethical hacking",
     "cryptography",
 
-    # Soft Skills
-    "communication",
-    "leadership",
-    "problem solving",
-    "teamwork",
-    "critical thinking",
-    "time management"
+    "communication", "leadership", "problem solving",
+    "teamwork", "critical thinking", "time management"
 ]
 
 
@@ -222,9 +136,6 @@ SKILLS = [
 # SKILL EXTRACTION
 # ==========================================================
 def normalize_text(text):
-    """
-    Clean text for better matching.
-    """
     text = text.lower()
     text = text.replace("-", " ")
     text = text.replace("_", " ")
@@ -234,9 +145,6 @@ def normalize_text(text):
 
 
 def extract_skills(text):
-    """
-    Extract known skills from resume text.
-    """
     text = normalize_text(text)
     found_skills = []
 
@@ -250,9 +158,6 @@ def extract_skills(text):
 
 
 def extract_required_skills(job_description):
-    """
-    Extract required skills from job description.
-    """
     jd = normalize_text(job_description)
     required_skills = []
 
@@ -266,12 +171,9 @@ def extract_required_skills(job_description):
 
 
 # ==========================================================
-# JOB ROLE SUGGESTION ENGINE
+# JOB ROLE SUGGESTION
 # ==========================================================
 def suggest_jobs(skills):
-    """
-    Suggest job roles based on extracted resume skills.
-    """
     skills_lower = [skill.lower() for skill in skills]
 
     roles = []
@@ -279,9 +181,8 @@ def suggest_jobs(skills):
     if "python" in skills_lower and "sql" in skills_lower:
         roles.append("Data Analyst")
 
-    if (
-        "python" in skills_lower
-        and ("machine learning" in skills_lower or "data science" in skills_lower)
+    if "python" in skills_lower and (
+        "machine learning" in skills_lower or "data science" in skills_lower
     ):
         roles.append("Machine Learning Engineer")
 
@@ -345,12 +246,14 @@ def suggest_jobs(skills):
 
 
 # ==========================================================
-# EMPLOYABILITY SCORE ENGINE
+# SCORE CALCULATION
 # ==========================================================
-def calculate_employability_score(resume_skills, required_skills, matched_skills, missing_skills):
-    """
-    Calculate employability score using multiple factors.
-    """
+def calculate_employability_score(
+    resume_skills,
+    required_skills,
+    matched_skills,
+    missing_skills
+):
     if len(required_skills) == 0:
         skill_match_score = 60
     else:
@@ -360,24 +263,21 @@ def calculate_employability_score(resume_skills, required_skills, matched_skills
 
     penalty = len(missing_skills) * 4
 
-    final_score = int((skill_match_score * 0.7) + (skill_strength_score * 0.3) - penalty)
+    final_score = int(
+        (skill_match_score * 0.7)
+        + (skill_strength_score * 0.3)
+        - penalty
+    )
 
-    if final_score < 0:
-        final_score = 0
-
-    if final_score > 100:
-        final_score = 100
+    final_score = max(0, min(100, final_score))
 
     return final_score
 
 
 # ==========================================================
-# RESUME IMPROVEMENT SUGGESTIONS
+# RESUME SUGGESTIONS
 # ==========================================================
 def generate_suggestions(resume_text, missing_skills):
-    """
-    Generate resume improvement suggestions.
-    """
     suggestions = []
 
     if missing_skills:
@@ -428,19 +328,16 @@ def generate_suggestions(resume_text, missing_skills):
 
 
 # ==========================================================
-# LEARNING ROADMAP GENERATOR
+# LEARNING ROADMAP
 # ==========================================================
 def generate_learning_roadmap(missing_skills):
-    """
-    Generate weekly learning roadmap from missing skills.
-    """
     roadmap = []
 
     if not missing_skills:
         roadmap.append({
             "week": "Week 1",
             "skill": "Advanced Projects",
-            "task": "Build one real-time project and add it to GitHub."
+            "task": "Build one real-time project and upload it to GitHub."
         })
 
         roadmap.append({
@@ -468,13 +365,9 @@ def generate_learning_roadmap(missing_skills):
 
 
 # ==========================================================
-# MAIN RESUME ANALYSIS FUNCTION
+# MAIN RESUME ANALYSIS
 # ==========================================================
 def analyze_resume(uploaded_file, job_description):
-    """
-    Main function called from app.py.
-    Returns complete analysis result.
-    """
     resume_text = extract_resume_text(uploaded_file)
 
     if resume_text == "":
@@ -518,3 +411,80 @@ def analyze_resume(uploaded_file, job_description):
         "job_roles": job_roles,
         "roadmap": roadmap
     }
+
+
+# ==========================================================
+# AI MENTOR USING OPENAI API
+# ==========================================================
+def ai_mentor_response(question, analysis_result=None, chat_history=None):
+    if chat_history is None:
+        chat_history = []
+
+    if OpenAI is None or st is None:
+        return "AI package is not available. Please install openai and streamlit."
+
+    try:
+        api_key = st.secrets.get("OPENAI_API_KEY", "")
+
+        if api_key == "":
+            return (
+                "OpenAI API key is missing. Add OPENAI_API_KEY inside "
+                ".streamlit/secrets.toml or Streamlit Cloud Secrets."
+            )
+
+        model_name = st.secrets.get("OPENAI_MODEL", "gpt-4.1-mini")
+
+        client = OpenAI(api_key=api_key)
+
+        if analysis_result:
+            context = f"""
+Resume Skills: {analysis_result.get("resume_skills", [])}
+Required Skills: {analysis_result.get("required_skills", [])}
+Matched Skills: {analysis_result.get("matched_skills", [])}
+Missing Skills: {analysis_result.get("missing_skills", [])}
+Match Score: {analysis_result.get("match_score", 0)}%
+Employability Score: {analysis_result.get("employability_score", 0)}%
+Suggested Roles: {analysis_result.get("job_roles", [])}
+Suggestions: {analysis_result.get("suggestions", [])}
+"""
+        else:
+            context = "No resume analysis available yet."
+
+        history_text = ""
+
+        for msg in chat_history[-8:]:
+            role = msg.get("role", "user")
+            content = msg.get("content", "")
+            history_text += f"{role.upper()}: {content}\n"
+
+        prompt = f"""
+You are an advanced AI career mentor inside a Skill-Gap Aware Employability Assessment Platform.
+
+Your behavior:
+- Answer like a helpful mentor.
+- Use simple language for college students.
+- Give practical steps.
+- Suggest projects, skills, resume improvements, and interview preparation.
+- If resume analysis is available, personalize the answer.
+- Do not give very long answers unless asked.
+- Use bullet points when useful.
+
+Student Resume Analysis:
+{context}
+
+Previous Chat:
+{history_text}
+
+Student Question:
+{question}
+"""
+
+        response = client.responses.create(
+            model=model_name,
+            input=prompt
+        )
+
+        return response.output_text
+
+    except Exception as e:
+        return f"AI Mentor error: {str(e)}"
