@@ -1,13 +1,7 @@
 import streamlit as st
-from backend import (
-    register_user,
-    login_user,
-    analyze_resume,
-    ai_mentor_response
-)
+from backend import register_user, login_user, analyze_resume, ai_mentor_response
 import random
 import time
-
 
 # ---------------------------------------------------
 # PAGE CONFIG
@@ -19,17 +13,17 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-
 # ---------------------------------------------------
 # CSS
 # ---------------------------------------------------
 st.markdown("""
 <style>
+/* ================= MAIN APP ================= */
 .stApp{
     background:
-    radial-gradient(circle at top left, rgba(34,211,238,0.18), transparent 25%),
-    radial-gradient(circle at bottom right, rgba(139,92,246,0.20), transparent 25%),
-    linear-gradient(135deg, #020617 0%, #071127 40%, #0f172a 100%);
+    radial-gradient(circle at top left, rgba(34,211,238,0.16), transparent 24%),
+    radial-gradient(circle at bottom right, rgba(139,92,246,0.18), transparent 24%),
+    linear-gradient(135deg, #020617 0%, #081126 45%, #0f172a 100%);
     color:white;
 }
 
@@ -37,10 +31,11 @@ st.markdown("""
 footer {visibility:hidden;}
 header {visibility:hidden;}
 
+/* ================= TITLES ================= */
 .hero-title{
-    font-size:58px;
+    font-size:60px;
     font-weight:900;
-    line-height:1.1;
+    line-height:1.08;
     background:linear-gradient(90deg,#22d3ee,#60a5fa,#8b5cf6,#ffffff);
     -webkit-background-clip:text;
     -webkit-text-fill-color:transparent;
@@ -49,7 +44,7 @@ header {visibility:hidden;}
 .page-title{
     font-size:44px;
     font-weight:900;
-    margin-bottom:8px;
+    margin-bottom:10px;
     background:linear-gradient(90deg,#22d3ee,#60a5fa,#8b5cf6);
     -webkit-background-clip:text;
     -webkit-text-fill-color:transparent;
@@ -61,36 +56,78 @@ header {visibility:hidden;}
     line-height:1.7;
 }
 
+/* ================= GLASS CARDS ================= */
 .glass-card{
     background:rgba(255,255,255,0.075);
-    backdrop-filter:blur(22px);
-    -webkit-backdrop-filter:blur(22px);
-    border:1px solid rgba(255,255,255,0.12);
-    border-radius:25px;
+    backdrop-filter:blur(24px);
+    -webkit-backdrop-filter:blur(24px);
+    border:1px solid rgba(255,255,255,0.10);
+    border-radius:26px;
     padding:24px;
-    box-shadow:0 0 30px rgba(0,234,255,0.12);
     margin:14px 0;
-    transition:0.3s;
+    box-shadow:0 0 30px rgba(0,234,255,0.10);
+    transition:0.3s ease;
 }
 
 .glass-card:hover{
     transform:translateY(-4px);
-    box-shadow:0 0 38px rgba(34,211,238,0.25);
+    box-shadow:0 0 38px rgba(34,211,238,0.22);
 }
 
-.small-card{
-    background:linear-gradient(135deg, rgba(34,211,238,0.10), rgba(139,92,246,0.12));
+.highlight-card{
+    background:linear-gradient(135deg, rgba(34,211,238,0.12), rgba(139,92,246,0.12));
     border:1px solid rgba(255,255,255,0.10);
-    border-radius:22px;
-    padding:20px;
-    margin:10px 0;
+    border-radius:24px;
+    padding:22px;
+    margin:12px 0;
 }
 
+.metric-box{
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.10);
+    padding:18px;
+    border-radius:22px;
+    box-shadow:0 0 18px rgba(34,211,238,0.10);
+}
+
+.small-info{
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:18px;
+    padding:16px;
+    margin-top:10px;
+}
+
+/* ================= ICON BADGES ================= */
+.icon-badge{
+    width:58px;
+    height:58px;
+    border-radius:18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:28px;
+    font-weight:700;
+    background:linear-gradient(135deg,#06b6d4,#8b5cf6);
+    box-shadow:0 0 22px rgba(34,211,238,0.22);
+    margin-bottom:14px;
+}
+
+.sidebar-profile-card{
+    background:linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.05));
+    border:1px solid rgba(255,255,255,0.10);
+    border-radius:28px;
+    padding:22px;
+    margin:10px 0 18px 0;
+    box-shadow:0 0 24px rgba(34,211,238,0.10);
+}
+
+/* ================= INPUTS ================= */
 .stTextInput input,
 .stTextArea textarea{
     background:rgba(255,255,255,0.08)!important;
     color:white!important;
-    border:1px solid rgba(34,211,238,0.8)!important;
+    border:1px solid rgba(34,211,238,0.85)!important;
     border-radius:16px!important;
 }
 
@@ -101,6 +138,7 @@ header {visibility:hidden;}
     padding:15px;
 }
 
+/* ================= BUTTONS ================= */
 .stButton > button{
     width:100%;
     height:50px;
@@ -115,11 +153,12 @@ header {visibility:hidden;}
 
 .stButton > button:hover{
     transform:translateY(-2px);
-    box-shadow:0 0 30px rgba(34,211,238,0.45);
+    box-shadow:0 0 30px rgba(34,211,238,0.42);
 }
 
+/* ================= SIDEBAR ================= */
 section[data-testid="stSidebar"]{
-    background:linear-gradient(180deg, rgba(8,15,35,0.98), rgba(2,6,23,0.98));
+    background:linear-gradient(180deg, rgba(8,15,35,0.99), rgba(2,6,23,0.99));
     border-right:1px solid rgba(255,255,255,0.08);
 }
 
@@ -127,6 +166,7 @@ section[data-testid="stSidebar"] *{
     color:white;
 }
 
+/* ================= METRICS ================= */
 [data-testid="stMetric"]{
     background:rgba(255,255,255,0.07);
     border:1px solid rgba(255,255,255,0.10);
@@ -135,10 +175,12 @@ section[data-testid="stSidebar"] *{
     box-shadow:0 0 18px rgba(34,211,238,0.10);
 }
 
+/* ================= PROGRESS ================= */
 .stProgress > div > div > div > div{
     background:linear-gradient(90deg,#22d3ee,#3b82f6,#8b5cf6);
 }
 
+/* ================= PILLS ================= */
 .skill-pill{
     display:inline-block;
     padding:8px 16px;
@@ -167,6 +209,15 @@ section[data-testid="stSidebar"] *{
     background:linear-gradient(90deg,#22c55e,#14b8a6);
     color:white;
     font-weight:700;
+}
+
+/* ================= CHAT ================= */
+.chat-header{
+    background:linear-gradient(135deg, rgba(34,211,238,0.12), rgba(139,92,246,0.12));
+    border:1px solid rgba(255,255,255,0.10);
+    border-radius:24px;
+    padding:22px;
+    margin-bottom:12px;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -197,7 +248,6 @@ init_session()
 # ---------------------------------------------------
 def page_heading(title, subtitle=""):
     st.markdown(f'<div class="page-title">{title}</div>', unsafe_allow_html=True)
-
     if subtitle:
         st.markdown(f'<p class="subtext">{subtitle}</p>', unsafe_allow_html=True)
 
@@ -205,10 +255,8 @@ def page_heading(title, subtitle=""):
 def pills(items, pill_type="skill-pill"):
     if items:
         html = ""
-
         for item in items:
             html += f'<span class="{pill_type}">{item}</span>'
-
         st.markdown(html, unsafe_allow_html=True)
     else:
         st.info("No data available")
@@ -229,22 +277,23 @@ def score_label(score):
 # LOGIN PAGE
 # ---------------------------------------------------
 def login_page():
-    left, right = st.columns([1.5, 1], gap="large")
+    left, right = st.columns([1.55, 1], gap="large")
 
     with left:
         st.markdown("""
-        <div style="height:90vh;display:flex;flex-direction:column;justify-content:center;">
+        <div style="height:92vh;display:flex;flex-direction:column;justify-content:center;">
             <div class="hero-title">Skill-Gap Aware Employability</div>
-            <h2 style="color:white;margin-top:20px;">Assessment Platform Using Artificial Intelligence</h2>
+            <h2 style="color:white;margin-top:18px;">Assessment Platform Using Artificial Intelligence</h2>
             <p class="subtext">
-                A smart AI platform to analyze resumes, identify missing skills,
-                match job roles, predict employability, and generate personalized career guidance.
+                A smart AI platform to analyze resumes, find missing skills,
+                suggest job roles, predict employability, and provide ChatGPT-style career mentoring.
             </p>
 
             <div class="glass-card">
-                <h3>🚀 Core Features</h3>
+                <div class="icon-badge">⚡</div>
+                <h3>Platform Capabilities</h3>
                 <p>✅ Resume Intelligence</p>
-                <p>✅ Skill Gap Detection</p>
+                <p>✅ Skill-Gap Detection</p>
                 <p>✅ Employability Score</p>
                 <p>✅ Job Match Engine</p>
                 <p>✅ AI Mentor Chatbot</p>
@@ -257,11 +306,11 @@ def login_page():
         st.markdown('<div class="glass-card">', unsafe_allow_html=True)
 
         st.markdown("""
-        <h2 style="text-align:center;">⚡ Welcome</h2>
+        <h2 style="text-align:center;">🔐 Welcome Back</h2>
         <p style="text-align:center;color:#cbd5e1;">Login or create your account</p>
         """, unsafe_allow_html=True)
 
-        tab1, tab2 = st.tabs(["🔐 Login", "✨ Register"])
+        tab1, tab2 = st.tabs(["Sign In", "Create Account"])
 
         with tab1:
             username = st.text_input("Username", key="login_username")
@@ -302,32 +351,34 @@ def render_sidebar():
     st.sidebar.markdown("## ⚡ AI Navigation")
 
     st.sidebar.markdown(f"""
-    <div class="glass-card">
-        <h3 style="margin-bottom:8px;">👤 {st.session_state.username}</h3>
-        <p style="color:#cbd5e1;">Career Intelligence Profile</p>
+    <div class="sidebar-profile-card">
+        <div style="font-size:42px;margin-bottom:8px;">🪪</div>
+        <h3 style="margin:0;">{st.session_state.username}</h3>
+        <p style="color:#cbd5e1;margin-top:10px;">Career Intelligence Profile</p>
     </div>
     """, unsafe_allow_html=True)
 
     page = st.sidebar.radio(
         "Choose Module",
         [
-            "🏠 Executive Dashboard",
-            "📄 Resume Intelligence",
-            "📊 Skill Matrix",
+            "🏡 Executive Dashboard",
+            "🧾 Resume Intelligence",
+            "📈 Skill Matrix",
             "💼 Job Match Engine",
-            "🛣 Learning Roadmap",
+            "🗺️ Learning Roadmap",
             "🤖 AI Mentor",
-            "👤 Profile"
+            "🪪 Profile"
         ]
     )
 
     st.sidebar.markdown("---")
 
     st.sidebar.markdown("""
-    <div class="small-card">
-        <h4>💡 Tip</h4>
+    <div class="highlight-card">
+        <div style="font-size:30px;">💡</div>
+        <h4 style="margin-top:10px;">Smart Tip</h4>
         <p style="color:#cbd5e1;">
-            Upload your resume and a job description to unlock full AI insights.
+            Upload your resume and a job description to unlock full AI-based career insights.
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -350,7 +401,7 @@ def render_sidebar():
 def executive_dashboard():
     page_heading(
         "Executive Dashboard",
-        "View your career intelligence summary, employability insights, and improvement areas."
+        "Track your employability, resume match, missing skills, and career growth insights."
     )
 
     result = st.session_state.analysis_result
@@ -369,48 +420,52 @@ def executive_dashboard():
         placement = 0
 
     c1, c2, c3, c4 = st.columns(4)
-
-    c1.metric("Employability", f"{employability}%")
-    c2.metric("Resume Match", f"{match_score}%")
-    c3.metric("Missing Skills", missing_count)
-    c4.metric("Placement Chance", f"{placement}%")
+    c1.metric("🎯 Employability", f"{employability}%")
+    c2.metric("📄 Resume Match", f"{match_score}%")
+    c3.metric("⚠️ Missing Skills", missing_count)
+    c4.metric("🚀 Placement Chance", f"{placement}%")
 
     st.write("")
 
-    col1, col2 = st.columns([1.4, 1])
+    col1, col2 = st.columns([1.45, 1], gap="large")
 
     with col1:
         st.markdown("""
         <div class="glass-card">
-            <h2>🧠 AI Career Summary</h2>
+            <div class="icon-badge">🧠</div>
+            <h2>AI Career Summary</h2>
         """, unsafe_allow_html=True)
 
         if result:
             st.write(
-                f"Your employability level is **{score_label(employability)}**. "
-                f"You currently have **{len(result['resume_skills'])} detected skills**, "
+                f"Your current employability level is **{score_label(employability)}**. "
+                f"You have **{len(result['resume_skills'])} detected skills**, "
                 f"**{missing_count} missing skills**, and "
                 f"**{role_count} recommended job roles**."
             )
         else:
-            st.write("Analyze your resume first to generate personalized dashboard insights.")
+            st.write(
+                "Start by uploading your resume and a job description in Resume Intelligence "
+                "to generate real-time AI career analysis."
+            )
 
         st.markdown("</div>", unsafe_allow_html=True)
 
         st.markdown("""
-        <div class="glass-card">
-            <h2>📌 Quick Highlights</h2>
-            <p>• AI-based skill gap detection</p>
-            <p>• Resume and job description comparison</p>
-            <p>• Personalized learning roadmap</p>
-            <p>• ChatGPT-style AI career mentor</p>
+        <div class="highlight-card">
+            <h3>📌 Recommended Actions</h3>
+            <p>• Strengthen missing technical skills</p>
+            <p>• Add 2–3 strong projects to your resume</p>
+            <p>• Improve GitHub and LinkedIn visibility</p>
+            <p>• Practice role-based interview preparation</p>
         </div>
         """, unsafe_allow_html=True)
 
     with col2:
         st.markdown("""
         <div class="glass-card">
-            <h2>⚡ Dashboard Status</h2>
+            <div class="icon-badge">📊</div>
+            <h2>Progress Overview</h2>
         """, unsafe_allow_html=True)
 
         st.progress(employability / 100 if employability else 0)
@@ -419,10 +474,16 @@ def executive_dashboard():
         st.progress(match_score / 100 if match_score else 0)
         st.caption("Resume Match Progress")
 
+        st.markdown("""
+        <div class="small-info">
+            <b>Insight:</b> Better skill alignment and stronger projects improve both employability and job match.
+        </div>
+        """, unsafe_allow_html=True)
+
         st.markdown("</div>", unsafe_allow_html=True)
 
     if result:
-        x1, x2 = st.columns(2)
+        x1, x2 = st.columns(2, gap="large")
 
         with x1:
             st.markdown('<div class="glass-card"><h2>✅ Strong Skills</h2>', unsafe_allow_html=True)
@@ -447,11 +508,25 @@ def resume_intelligence():
     col1, col2 = st.columns(2, gap="large")
 
     with col1:
-        st.markdown('<div class="glass-card"><h3>📄 Upload Resume PDF</h3></div>', unsafe_allow_html=True)
+        st.markdown("""
+        <div class="glass-card">
+            <div class="icon-badge">📄</div>
+            <h3>Upload Resume PDF</h3>
+            <p class="subtext">Upload a text-based PDF resume for AI analysis.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
         uploaded_file = st.file_uploader("Upload Resume PDF", type=["pdf"])
 
     with col2:
-        st.markdown('<div class="glass-card"><h3>💼 Paste Job Description</h3></div>', unsafe_allow_html=True)
+        st.markdown("""
+        <div class="glass-card">
+            <div class="icon-badge">💼</div>
+            <h3>Paste Job Description</h3>
+            <p class="subtext">Paste the target job description for skill comparison.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
         job_description = st.text_area(
             "Paste Job Description",
             height=220,
@@ -481,10 +556,9 @@ def resume_intelligence():
         st.markdown("---")
 
         a1, a2, a3 = st.columns(3)
-
-        a1.metric("Resume Match", f"{result['match_score']}%")
-        a2.metric("Employability", f"{result['employability_score']}%")
-        a3.metric("Skills Found", len(result["resume_skills"]))
+        a1.metric("📄 Resume Match", f"{result['match_score']}%")
+        a2.metric("🎯 Employability", f"{result['employability_score']}%")
+        a3.metric("🧩 Skills Found", len(result["resume_skills"]))
 
         st.progress(result["match_score"] / 100)
         st.caption("Resume Match Score")
@@ -492,7 +566,7 @@ def resume_intelligence():
         st.progress(result["employability_score"] / 100)
         st.caption("Employability Score")
 
-        b1, b2 = st.columns(2)
+        b1, b2 = st.columns(2, gap="large")
 
         with b1:
             st.markdown('<div class="glass-card"><h2>✅ Matched Skills</h2>', unsafe_allow_html=True)
@@ -505,10 +579,8 @@ def resume_intelligence():
             st.markdown("</div>", unsafe_allow_html=True)
 
         st.markdown('<div class="glass-card"><h2>💡 AI Suggestions</h2>', unsafe_allow_html=True)
-
         for suggestion in result["suggestions"]:
             st.write("✅", suggestion)
-
         st.markdown("</div>", unsafe_allow_html=True)
 
 
@@ -517,7 +589,7 @@ def resume_intelligence():
 # ---------------------------------------------------
 def skill_matrix():
     page_heading(
-        "Advanced Skill Matrix",
+        "Skill Matrix",
         "Visualize your detected skills and identify weak areas."
     )
 
@@ -542,6 +614,7 @@ def skill_matrix():
 
         st.markdown(f"""
         <div class="glass-card">
+            <div class="icon-badge">📈</div>
             <h3>{skill}</h3>
             <p style="color:#cbd5e1;">Status: <b>{status}</b></p>
         </div>
@@ -566,7 +639,7 @@ def job_match_engine():
         st.info("Analyze your resume first to get job role suggestions.")
         return
 
-    cols = st.columns(2)
+    cols = st.columns(2, gap="large")
 
     for i, role in enumerate(result["job_roles"]):
         score = random.randint(74, 96)
@@ -574,7 +647,8 @@ def job_match_engine():
         with cols[i % 2]:
             st.markdown(f"""
             <div class="glass-card">
-                <h2>💼 {role}</h2>
+                <div class="icon-badge">💼</div>
+                <h2>{role}</h2>
                 <h1>{score}%</h1>
                 <p class="subtext">AI compatibility score for this role</p>
             </div>
@@ -605,6 +679,7 @@ def learning_roadmap():
     for item in roadmap:
         st.markdown(f"""
         <div class="glass-card">
+            <div class="icon-badge">🗺️</div>
             <h2>{item["week"]}: {item["skill"]}</h2>
             <p>{item["task"]}</p>
         </div>
@@ -621,8 +696,9 @@ def ai_mentor():
     )
 
     st.markdown("""
-    <div class="glass-card">
-        <h2>🤖 AI Career Mentor</h2>
+    <div class="chat-header">
+        <div class="icon-badge">🤖</div>
+        <h2>AI Career Mentor</h2>
         <p class="subtext">
             Ask about resume improvement, projects, missing skills, internships,
             interview preparation, job roles, or learning roadmap.
@@ -691,7 +767,8 @@ def profile():
 
     st.markdown(f"""
     <div class="glass-card">
-        <h2>👤 User Profile</h2>
+        <div class="icon-badge">🪪</div>
+        <h2>User Profile</h2>
         <p><b>Username:</b> {st.session_state.username}</p>
         <p><b>Uploaded Resume:</b> {uploaded_resume}</p>
         <p><b>Employability Score:</b> {employability}</p>
@@ -714,25 +791,19 @@ def profile():
 def dashboard():
     page = render_sidebar()
 
-    if page == "🏠 Executive Dashboard":
+    if page == "🏡 Executive Dashboard":
         executive_dashboard()
-
-    elif page == "📄 Resume Intelligence":
+    elif page == "🧾 Resume Intelligence":
         resume_intelligence()
-
-    elif page == "📊 Skill Matrix":
+    elif page == "📈 Skill Matrix":
         skill_matrix()
-
     elif page == "💼 Job Match Engine":
         job_match_engine()
-
-    elif page == "🛣 Learning Roadmap":
+    elif page == "🗺️ Learning Roadmap":
         learning_roadmap()
-
     elif page == "🤖 AI Mentor":
         ai_mentor()
-
-    elif page == "👤 Profile":
+    elif page == "🪪 Profile":
         profile()
 
 
